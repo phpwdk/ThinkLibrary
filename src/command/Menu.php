@@ -1,30 +1,16 @@
 <?php
-
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
 declare (strict_types=1);
 
-namespace think\admin\command;
+namespace think\simple\command;
 
-use think\admin\Command;
-use think\admin\extend\DataExtend;
-use think\admin\model\SystemMenu;
+use think\simple\Command;
+use think\simple\extend\DataExtend;
+use think\simple\model\SystemMenu;
 
 /**
  * 重置并清理系统菜单
  * Class Menu
- * @package think\admin\command
+ * @package think\simple\command
  */
 class Menu extends Command
 {
@@ -67,8 +53,10 @@ class Menu extends Command
 
     /**
      * 写入单项菜单数据
+     *
      * @param array $arr 单项菜单数据
      * @param mixed $pid 上级菜单编号
+     *
      * @return int|string
      */
     private function write(array $arr, $pid = 0)

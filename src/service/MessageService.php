@@ -15,17 +15,16 @@
 
 declare (strict_types=1);
 
-namespace think\admin\service;
+namespace think\simple\service;
 
-use think\admin\extend\HttpExtend;
-use think\admin\Service;
+use think\simple\extend\HttpExtend;
+use think\simple\Service;
 
 /**
  * 旧助通短信接口服务
  * Class MessageService
  * @package app\store\service
  * =================================
- *
  *  CREATE TABLE `system_message_history` (
  *     `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
  *     `phone` varchar(100) DEFAULT '' COMMENT '目标手机',
@@ -36,7 +35,6 @@ use think\admin\Service;
  *     PRIMARY KEY (`id`) USING BTREE,
  *     KEY `idx_system_message_history_phone` (`phone`) USING BTREE
  *  ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统-短信';
- *
  * =================================
  * 发送国内短信需要给产品码 [productid]
  * --- 验证短信的产品码为：676767
@@ -70,7 +68,7 @@ class MessageService extends Service
      */
     protected function initialize(): MessageService
     {
-        $this->table = 'SystemMessageHistory';
+        $this->table         = 'SystemMessageHistory';
         $this->chinaUsername = sysconf('sms_zt.china_username');
         $this->chinaPassword = sysconf('sms_zt.china_password');
         $this->globeUsername = sysconf('sms_zt.globe_username');
@@ -80,8 +78,10 @@ class MessageService extends Service
 
     /**
      * 配置内陆短信认证
+     *
      * @param string $username 账号名称
      * @param string $password 账号密码
+     *
      * @return $this
      */
     public function configChina(string $username, string $password): MessageService
@@ -93,8 +93,10 @@ class MessageService extends Service
 
     /**
      * 配置国际短信认证
+     *
      * @param string $username 账号名称
      * @param string $password 账号密码
+     *
      * @return $this
      */
     public function configGlobe(string $username, string $password): MessageService
@@ -106,7 +108,9 @@ class MessageService extends Service
 
     /**
      * 设置存储数据表
+     *
      * @param string $table
+     *
      * @return $this
      */
     public function setSaveTable(string $table): MessageService
@@ -117,8 +121,10 @@ class MessageService extends Service
 
     /**
      * 生成短信内容
+     *
      * @param string $content
-     * @param array $params
+     * @param array  $params
+     *
      * @return string
      */
     public function buildContent(string $content, array $params = []): string
@@ -131,14 +137,16 @@ class MessageService extends Service
 
     /**
      * 发送国内短信验证码
-     * @param integer|string $phone 手机号
-     * @param integer|string $content 短信内容
+     *
+     * @param integer|string $phone     手机号
+     * @param integer|string $content   短信内容
      * @param integer|string $productid 短信通道
+     *
      * @return boolean
      */
     public function sendChinaSms($phone, $content, $productid = '676767'): bool
     {
-        $tkey = date("YmdHis");
+        $tkey   = date("YmdHis");
         $result = HttpExtend::get('http://www.ztsms.cn/sendNSms.do', [
             'tkey'      => $tkey,
             'mobile'    => $phone,
@@ -157,9 +165,11 @@ class MessageService extends Service
 
     /**
      * 发送国内短信验证码
+     *
      * @param integer|string $phone 目标手机
-     * @param integer $wait 等待时间
-     * @param string $type 短信模板
+     * @param integer        $wait  等待时间
+     * @param string         $type  短信模板
+     *
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -187,9 +197,11 @@ class MessageService extends Service
 
     /**
      * 验证手机短信验证码
+     *
      * @param integer|string $phone 目标手机
-     * @param integer|string $code 短信验证码
-     * @param string $type 短信模板
+     * @param integer|string $code  短信验证码
+     * @param string         $type  短信模板
+     *
      * @return boolean
      */
     public function check($phone, $code, string $type = 'sms_reg_template'): bool
@@ -204,7 +216,7 @@ class MessageService extends Service
      */
     public function queryChinaSmsBalance(): array
     {
-        $tkey = date("YmdHis");
+        $tkey   = date("YmdHis");
         $result = HttpExtend::get('http://www.ztsms.cn/balanceN.do', [
             'username' => $this->chinaUsername, 'tkey' => $tkey,
             'password' => md5(md5($this->chinaPassword) . $tkey),
@@ -240,9 +252,11 @@ class MessageService extends Service
 
     /**
      * 发送国际短信内容
-     * @param integer|string $code 国家代码
-     * @param integer|string $mobile 手机号码
-     * @param string $content 发送内容
+     *
+     * @param integer|string $code    国家代码
+     * @param integer|string $mobile  手机号码
+     * @param string         $content 发送内容
+     *
      * @return boolean
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -250,7 +264,7 @@ class MessageService extends Service
      */
     public function sendGlobeSms($code, $mobile, string $content): bool
     {
-        $tkey = date("YmdHis");
+        $tkey   = date("YmdHis");
         $result = HttpExtend::get('http://intl.zthysms.com/intSendSms.do', [
             'tkey'     => $tkey, 'code' => $code, 'mobile' => $mobile,
             'content'  => $content, 'username' => sysconf('sms_zt_username2'),
@@ -268,7 +282,7 @@ class MessageService extends Service
      */
     public function queryGlobeSmsBalance(): array
     {
-        $tkey = date("YmdHis");
+        $tkey   = date("YmdHis");
         $result = HttpExtend::get('http://intl.zthysms.com/intBalance.do', [
             'username' => $this->globeUsername, 'tkey' => $tkey, 'password' => md5(md5($this->globePassword) . $tkey),
         ]);

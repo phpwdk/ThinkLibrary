@@ -15,20 +15,20 @@
 
 declare (strict_types=1);
 
-namespace think\admin\service;
+namespace think\simple\service;
 
 use stdClass;
-use think\admin\Exception;
-use think\admin\extend\HttpExtend;
-use think\admin\helper\ValidateHelper;
-use think\admin\Service;
+use think\simple\Exception;
+use think\simple\extend\HttpExtend;
+use think\simple\helper\ValidateHelper;
+use think\simple\Service;
 use think\App;
 use think\exception\HttpResponseException;
 
 /**
  * 通用接口基础服务
  * Class InterfaceService
- * @package think\admin\service
+ * @package think\simple\service
  */
 class InterfaceService extends Service
 {
@@ -59,7 +59,9 @@ class InterfaceService extends Service
     /**
      * 接口服务初始化
      * InterfaceService constructor.
+     *
      * @param App $app
+     *
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -67,14 +69,16 @@ class InterfaceService extends Service
     public function __construct(App $app)
     {
         parent::__construct($app);
-        $this->appid = sysconf('data.interface_appid') ?: '';
+        $this->appid  = sysconf('data.interface_appid') ?: '';
         $this->appkey = sysconf('data.interface_appkey') ?: '';
         $this->getway = sysconf('data.interface_getway') ?: '';
     }
 
     /**
      * 设置接口网关
+     *
      * @param string $getway 接口网关
+     *
      * @return $this
      */
     public function getway(string $getway): InterfaceService
@@ -85,13 +89,15 @@ class InterfaceService extends Service
 
     /**
      * 设置授权账号
-     * @param string $appid 接口账号
+     *
+     * @param string $appid  接口账号
      * @param string $appkey 接口密钥
+     *
      * @return $this
      */
     public function setAuth(string $appid, string $appkey): InterfaceService
     {
-        $this->appid = $appid;
+        $this->appid  = $appid;
         $this->appkey = $appkey;
         return $this;
     }
@@ -157,6 +163,7 @@ class InterfaceService extends Service
 
     /**
      * 回复业务处理失败的消息
+     *
      * @param mixed $info 消息内容
      * @param mixed $data 返回数据
      * @param mixed $code 返回状态码
@@ -171,6 +178,7 @@ class InterfaceService extends Service
 
     /**
      * 回复业务处理成功的消息
+     *
      * @param mixed $info 消息内容
      * @param mixed $data 返回数据
      * @param mixed $code 返回状态码
@@ -185,6 +193,7 @@ class InterfaceService extends Service
 
     /**
      * 回复根失败消息
+     *
      * @param mixed $info 消息内容
      * @param mixed $data 返回数据
      * @param mixed $code 根状态码
@@ -196,6 +205,7 @@ class InterfaceService extends Service
 
     /**
      * 回复根成功消息
+     *
      * @param mixed $info 消息内容
      * @param mixed $data 返回数据
      * @param mixed $code 根状态码
@@ -207,6 +217,7 @@ class InterfaceService extends Service
 
     /**
      * 回复根签名消息
+     *
      * @param mixed $info 消息内容
      * @param mixed $data 返回数据
      * @param mixed $code 根状态码
@@ -214,24 +225,28 @@ class InterfaceService extends Service
     public function baseResponse($info, $data = [], $code = 1): void
     {
         $array = $this->signData($data);
-        throw new HttpResponseException(json([
-            'code' => $code, 'info' => $info, 'time' => $array['time'],
-            'sign' => $array['sign'], 'appid' => $array['appid'], 'nostr' => $array['nostr'],
-            'data' => $this->type !== 'json' ? json_decode($array['data'], true) : $array['data'],
-        ]));
+        throw new HttpResponseException(
+            json([
+                'code' => $code, 'info' => $info, 'time' => $array['time'],
+                'sign' => $array['sign'], 'appid' => $array['appid'], 'nostr' => $array['nostr'],
+                'data' => $this->type !== 'json' ? json_decode($array['data'], true) : $array['data'],
+            ])
+        );
     }
 
     /**
      * 接口数据模拟请求
-     * @param string $uri 接口地址
-     * @param array $data 请求数据
+     *
+     * @param string  $uri   接口地址
+     * @param array   $data  请求数据
      * @param boolean $check 验证结果
+     *
      * @return array
      * @throws Exception
      */
     public function doRequest(string $uri, array $data = [], bool $check = true): array
     {
-        $url = rtrim($this->getway, '/') . '/' . ltrim($uri, '/');
+        $url     = rtrim($this->getway, '/') . '/' . ltrim($uri, '/');
         $content = HttpExtend::post($url, $this->signData($data)) ?: '';
         // 解析返回的结果
         if (!($result = json_decode($content, true)) || empty($result)) {
@@ -243,7 +258,7 @@ class InterfaceService extends Service
         // 无需验证直接返回
         if (empty($check)) return $array;
         // 返回结果签名验证
-        $json = is_string($result['data']) ? $result['data'] : json_encode($result['data'], JSON_UNESCAPED_UNICODE);
+        $json  = is_string($result['data']) ? $result['data'] : json_encode($result['data'], JSON_UNESCAPED_UNICODE);
         $build = $this->signString($json, $result['time'], $result['nostr']);
         if ($build['sign'] === $result['sign']) return $array ?: [];
         throw new Exception('返回结果签名验证失败！');
@@ -251,7 +266,9 @@ class InterfaceService extends Service
 
     /**
      * 接口响应数据签名
+     *
      * @param array $data ['appid','nostr','time','sign','data']
+     *
      * @return array
      */
     private function signData(array $data): array
@@ -261,9 +278,11 @@ class InterfaceService extends Service
 
     /**
      * 数据字符串数据签名
+     *
      * @param string $json 待签名的数据
-     * @param mixed $time 签名的时间戳
-     * @param mixed $rand 签名随机字符
+     * @param mixed  $time 签名的时间戳
+     * @param mixed  $rand 签名随机字符
+     *
      * @return array
      */
     private function signString(string $json, $time = null, $rand = null): array

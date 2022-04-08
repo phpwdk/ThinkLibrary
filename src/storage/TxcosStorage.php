@@ -2,16 +2,16 @@
 
 declare (strict_types=1);
 
-namespace think\admin\storage;
+namespace think\simple\storage;
 
-use think\admin\Exception;
-use think\admin\extend\HttpExtend;
-use think\admin\Storage;
+use think\simple\Exception;
+use think\simple\extend\HttpExtend;
+use think\simple\Storage;
 
 /**
  * 腾讯云COS存储支持
  * Class TxcosStorage
- * @package think\admin\storage
+ * @package think\simple\storage
  */
 class TxcosStorage extends Storage
 {
@@ -41,7 +41,7 @@ class TxcosStorage extends Storage
 
     /**
      * 初始化入口
-     * @throws \think\admin\Exception
+     * @throws \think\simple\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -49,12 +49,12 @@ class TxcosStorage extends Storage
     protected function initialize()
     {
         // 读取配置文件
-        $this->point = sysconf('storage.txcos_point');
-        $this->bucket = sysconf('storage.txcos_bucket');
-        $this->secretId = sysconf('storage.txcos_access_key');
+        $this->point     = sysconf('storage.txcos_point');
+        $this->bucket    = sysconf('storage.txcos_bucket');
+        $this->secretId  = sysconf('storage.txcos_access_key');
         $this->secretKey = sysconf('storage.txcos_secret_key');
         // 计算链接前缀
-        $type = strtolower(sysconf('storage.txcos_http_protocol'));
+        $type   = strtolower(sysconf('storage.txcos_http_protocol'));
         $domain = strtolower(sysconf('storage.txcos_http_domain'));
         if ($type === 'auto') {
             $this->prefix = "//{$domain}";
@@ -65,9 +65,11 @@ class TxcosStorage extends Storage
 
     /**
      * 获取当前实例对象
+     *
      * @param null|string $name
+     *
      * @return TxcosStorage
-     * @throws \think\admin\Exception
+     * @throws \think\simple\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -79,10 +81,12 @@ class TxcosStorage extends Storage
 
     /**
      * 上传文件内容
-     * @param string $name 文件名称
-     * @param string $file 文件内容
-     * @param boolean $safe 安全模式
+     *
+     * @param string      $name    文件名称
+     * @param string      $file    文件内容
+     * @param boolean     $safe    安全模式
      * @param null|string $attname 下载名称
+     *
      * @return array
      */
     public function set(string $name, string $file, bool $safe = false, ?string $attname = null): array
@@ -92,7 +96,7 @@ class TxcosStorage extends Storage
             $data['Content-Disposition'] = urlencode($attname);
         }
         $data['success_action_status'] = '200';
-        $file = ['field' => 'file', 'name' => $name, 'content' => $file];
+        $file                          = ['field' => 'file', 'name' => $name, 'content' => $file];
         if (is_numeric(stripos(HttpExtend::submit($this->upload(), $data, $file), '200 OK'))) {
             return ['file' => $this->path($name, $safe), 'url' => $this->url($name, $safe, $attname), 'key' => $name];
         } else {
@@ -102,8 +106,10 @@ class TxcosStorage extends Storage
 
     /**
      * 根据文件名读取文件内容
-     * @param string $name 文件名称
+     *
+     * @param string  $name 文件名称
      * @param boolean $safe 安全模式
+     *
      * @return string
      */
     public function get(string $name, bool $safe = false): string
@@ -113,8 +119,10 @@ class TxcosStorage extends Storage
 
     /**
      * 删除存储的文件
-     * @param string $name 文件名称
+     *
+     * @param string  $name 文件名称
      * @param boolean $safe 安全模式
+     *
      * @return boolean
      */
     public function del(string $name, bool $safe = false): bool
@@ -128,13 +136,15 @@ class TxcosStorage extends Storage
 
     /**
      * 判断文件是否存在
-     * @param string $name 文件名称
+     *
+     * @param string  $name 文件名称
      * @param boolean $safe 安全模式
+     *
      * @return boolean
      */
     public function has(string $name, bool $safe = false): bool
     {
-        $file = $this->delSuffix($name);
+        $file   = $this->delSuffix($name);
         $result = HttpExtend::request('HEAD', "http://{$this->bucket}.{$this->point}/{$file}", [
             'returnHeader' => true, 'headers' => $this->headerSign('HEAD', $name),
         ]);
@@ -143,9 +153,11 @@ class TxcosStorage extends Storage
 
     /**
      * 获取文件当前URL地址
-     * @param string $name 文件名称
-     * @param boolean $safe 安全模式
+     *
+     * @param string      $name    文件名称
+     * @param boolean     $safe    安全模式
      * @param null|string $attname 下载名称
+     *
      * @return string
      */
     public function url(string $name, bool $safe = false, ?string $attname = null): string
@@ -155,8 +167,10 @@ class TxcosStorage extends Storage
 
     /**
      * 获取文件存储路径
-     * @param string $name 文件名称
+     *
+     * @param string  $name 文件名称
      * @param boolean $safe 安全模式
+     *
      * @return string
      */
     public function path(string $name, bool $safe = false): string
@@ -166,9 +180,11 @@ class TxcosStorage extends Storage
 
     /**
      * 获取文件存储信息
-     * @param string $name 文件名称
-     * @param boolean $safe 安全模式
+     *
+     * @param string      $name    文件名称
+     * @param boolean     $safe    安全模式
      * @param null|string $attname 下载名称
+     *
      * @return array
      */
     public function info(string $name, bool $safe = false, ?string $attname = null): array
@@ -191,18 +207,20 @@ class TxcosStorage extends Storage
 
     /**
      * 获取文件上传令牌
-     * @param string $name 文件名称
-     * @param integer $expires 有效时间
+     *
+     * @param string      $name    文件名称
+     * @param integer     $expires 有效时间
      * @param null|string $attname 下载名称
+     *
      * @return array
      */
     public function buildUploadToken(string $name, int $expires = 3600, ?string $attname = null): array
     {
         $startTimestamp = time();
-        $endTimestamp = $startTimestamp + $expires;
-        $keyTime = "{$startTimestamp};{$endTimestamp}";
-        $siteurl = $this->url($name, false, $attname);
-        $policy = json_encode([
+        $endTimestamp   = $startTimestamp + $expires;
+        $keyTime        = "{$startTimestamp};{$endTimestamp}";
+        $siteurl        = $this->url($name, false, $attname);
+        $policy         = json_encode([
             'expiration' => date('Y-m-d\TH:i:s.000\Z', $endTimestamp),
             'conditions' => [['q-ak' => $this->secretId], ['q-sign-time' => $keyTime], ['q-sign-algorithm' => 'sha1']],
         ]);
@@ -215,8 +233,10 @@ class TxcosStorage extends Storage
 
     /**
      * 操作请求头信息签名
+     *
      * @param string $method 请求方式
      * @param string $soruce 资源名称
+     *
      * @return array
      */
     private function headerSign(string $method, string $soruce): array
@@ -224,8 +244,8 @@ class TxcosStorage extends Storage
         $header = [];
         // 1.生成 KeyTime
         $startTimestamp = time();
-        $endTimestamp = $startTimestamp + 3600;
-        $keyTime = "{$startTimestamp};{$endTimestamp}";
+        $endTimestamp   = $startTimestamp + 3600;
+        $keyTime        = "{$startTimestamp};{$endTimestamp}";
         // 2.生成 SignKey
         $signKey = hash_hmac('sha1', $keyTime, $this->secretKey);
         // 3.生成 UrlParamList, HttpParameters
@@ -233,25 +253,25 @@ class TxcosStorage extends Storage
         if (!empty($parse_url['query'])) {
             parse_str($parse_url['query'], $params);
             uksort($params, 'strnatcasecmp');
-            $urlParamList = join(';', array_keys($params));
+            $urlParamList   = join(';', array_keys($params));
             $httpParameters = http_build_query($params);
         }
         // 4.生成 HeaderList, HttpHeaders
         [$headerList, $httpHeaders] = ['', ''];
         if (!empty($header)) {
             uksort($header, 'strnatcasecmp');
-            $headerList = join(';', array_keys($header));
+            $headerList  = join(';', array_keys($header));
             $httpHeaders = http_build_query($header);
         }
         // 5.生成 HttpString
         $httpString = strtolower($method) . "\n/{$parse_url['path']}\n{$httpParameters}\n{$httpHeaders}\n";
         // 6.生成 StringToSign
         $httpStringSha1 = sha1($httpString);
-        $stringToSign = "sha1\n{$keyTime}\n{$httpStringSha1}\n";
+        $stringToSign   = "sha1\n{$keyTime}\n{$httpStringSha1}\n";
         // 7.生成 Signature
         $signature = hash_hmac('sha1', $stringToSign, $signKey);
         // 8.生成签名
-        $signArray = [
+        $signArray               = [
             'q-sign-algorithm' => 'sha1',
             'q-ak'             => $this->secretId,
             'q-sign-time'      => $keyTime,

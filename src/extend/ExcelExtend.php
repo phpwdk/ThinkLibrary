@@ -15,20 +15,21 @@
 
 declare (strict_types=1);
 
-namespace think\admin\extend;
+namespace think\simple\extend;
 
 /**
  * 导出 CSV 文件扩展
  * Class ExcelExtend
- * @package think\admin\extend
+ * @package think\simple\extend
  */
 class ExcelExtend
 {
 
     /**
      * 设置写入 CSV 文件头部
-     * @param string $name 导出文件名称
-     * @param array $headers 表格头部(一维数组)
+     *
+     * @param string $name    导出文件名称
+     * @param array  $headers 表格头部(一维数组)
      */
     public static function header(string $name, array $headers): void
     {
@@ -46,7 +47,8 @@ class ExcelExtend
 
     /**
      * 设置写入CSV文件内容
-     * @param array $list 数据列表(二维数组)
+     *
+     * @param array $list  数据列表(二维数组)
      * @param array $rules 数据规则(一维数组)
      */
     public static function body(array $list, array $rules): void
@@ -66,8 +68,10 @@ class ExcelExtend
 
     /**
      * 根据数组key查询(可带点规则)
-     * @param array $data 数据
+     *
+     * @param array  $data 数据
      * @param string $rule 规则，如: order.order_no
+     *
      * @return string
      */
     public static function parseKeyDotValue(array $data, string $rule): string

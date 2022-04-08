@@ -1,28 +1,14 @@
 <?php
-
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
 declare (strict_types=1);
 
-namespace think\admin\command;
+namespace think\simple\command;
 
 use Error;
 use Exception;
 use Psr\Log\NullLogger;
-use think\admin\Command;
-use think\admin\model\SystemQueue;
-use think\admin\service\QueueService;
+use think\simple\Command;
+use think\simple\model\SystemQueue;
+use think\simple\service\QueueService;
 use think\Collection;
 use think\console\Input;
 use think\console\input\Argument;
@@ -34,7 +20,7 @@ use Throwable;
 /**
  * 异步任务管理指令
  * Class Queue
- * @package think\admin\command
+ * @package think\simple\command
  */
 class Queue extends Command
 {
@@ -66,8 +52,10 @@ class Queue extends Command
 
     /**
      * 任务执行入口
-     * @param Input $input
+     *
+     * @param Input  $input
      * @param Output $output
+     *
      * @return void
      */
     protected function execute(Input $input, Output $output)
@@ -96,9 +84,9 @@ class Queue extends Command
      */
     protected function webStartAction()
     {
-        $port = $this->input->getOption('port') ?: '80';
-        $host = $this->input->getOption('host') ?: '127.0.0.1';
-        $root = $this->app->getRootPath() . 'public' . DIRECTORY_SEPARATOR;
+        $port    = $this->input->getOption('port') ?: '80';
+        $host    = $this->input->getOption('host') ?: '127.0.0.1';
+        $root    = $this->app->getRootPath() . 'public' . DIRECTORY_SEPARATOR;
         $command = "php -S {$host}:{$port} -t {$root} {$root}router.php";
         $this->output->comment(">$ {$command}");
         if (count($result = $this->process->query($command)) > 0) {
@@ -185,15 +173,15 @@ class Queue extends Command
 
     /**
      * 清理所有任务
-     * @throws \think\admin\Exception
+     * @throws \think\simple\Exception
      */
     protected function cleanAction()
     {
         // 清理 7 天前的历史任务记录
-        $map = [['exec_time', '<', time() - 7 * 24 * 3600]];
+        $map   = [['exec_time', '<', time() - 7 * 24 * 3600]];
         $clean = SystemQueue::mk()->where($map)->delete();
         // 标记超过 1 小时未完成的任务为失败状态，循环任务失败重置
-        $map1 = [['loops_time', '>', 0], ['status', '=', 4]]; // 执行失败的循环任务
+        $map1 = [['loops_time', '>', 0], ['status', '=', 4]];            // 执行失败的循环任务
         $map2 = [['exec_time', '<', time() - 3600], ['status', '=', 2]]; // 执行超时的任务
         [$timeout, $loops, $total] = [0, 0, SystemQueue::mk()->whereOr([$map1, $map2])->count()];
         SystemQueue::mk()->whereOr([$map1, $map2])->chunk(100, function (Collection $items) use ($total, &$loops, &$timeout) {
@@ -286,12 +274,12 @@ class Queue extends Command
                 if (class_exists($command = $this->queue->record['command'])) {
                     // 自定义任务，支持返回消息（支持异常结束，异常码可选择 3|4 设置任务状态）
                     $class = $this->app->make($command, [], true);
-                    if ($class instanceof \think\admin\Queue) {
+                    if ($class instanceof \think\simple\Queue) {
                         $this->updateQueue(3, $class->initialize($this->queue)->execute($this->queue->data) ?: '');
                     } elseif ($class instanceof QueueService) {
                         $this->updateQueue(3, $class->initialize($this->queue->code)->execute($this->queue->data) ?: '');
                     } else {
-                        throw new \think\admin\Exception("自定义 {$command} 未继承 Queue 或 QueueService");
+                        throw new \think\simple\Exception("自定义 {$command} 未继承 Queue 或 QueueService");
                     }
                 } else {
                     // 自定义指令，不支持返回消息（支持异常结束，异常码可选择 3|4 设置任务状态）
@@ -308,8 +296,9 @@ class Queue extends Command
 
     /**
      * 修改当前任务状态
-     * @param integer $status 任务状态
-     * @param string $message 消息内容
+     *
+     * @param integer $status  任务状态
+     * @param string  $message 消息内容
      * @param boolean $isSplit 是否分隔
      */
     private function updateQueue(int $status, string $message, bool $isSplit = true)

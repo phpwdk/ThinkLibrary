@@ -14,23 +14,25 @@
 
 declare (strict_types=1);
 
-namespace think\admin\multiple;
+namespace think\simple\multiple;
 
 use InvalidArgumentException;
-use think\admin\service\NodeService;
+use think\simple\service\NodeService;
 use think\route\Url;
 
 /**
  * 多应用 URL 生成与解析
  * Class BuildUrl
- * @package think\admin\multiple
+ * @package think\simple\multiple
  */
 class BuildUrl extends Url
 {
     /**
      * 直接解析 URL 地址
-     * @param string $url URL
+     *
+     * @param string         $url    URL
      * @param string|boolean $domain Domain
+     *
      * @return string
      */
     protected function parseUrl(string $url, &$domain): string
@@ -43,12 +45,12 @@ class BuildUrl extends Url
         } elseif (0 === strpos($url, '@')) {
             $url = substr($url, 1);
         } else {
-            $attrs = str2arr($url, '/');
+            $attrs  = str2arr($url, '/');
             $action = empty($attrs) ? $request->action() : array_pop($attrs);
             $contrl = empty($attrs) ? $request->controller() : array_pop($attrs);
             $module = empty($attrs) ? $this->app->http->getName() : array_pop($attrs);
             // 拼装新的链接地址
-            $url = NodeService::nameTolower($contrl) . '/' . $action;
+            $url  = NodeService::nameTolower($contrl) . '/' . $action;
             $bind = $this->app->config->get('app.domain_bind', []);
             if ($key = array_search($module, $bind)) {
                 if (isset($bind[$_SERVER['SERVER_NAME']])) $domain = $_SERVER['SERVER_NAME'];
@@ -68,19 +70,19 @@ class BuildUrl extends Url
      */
     public function build(): string
     {
-        $url = $this->url;
-        $vars = $this->vars;
-        $domain = $this->domain;
-        $suffix = $this->suffix;
+        $url     = $this->url;
+        $vars    = $this->vars;
+        $domain  = $this->domain;
+        $suffix  = $this->suffix;
         $request = $this->app->request;
         if (0 === strpos($url, '[') && $pos = strpos($url, ']')) {
             // [name] 表示使用路由命名标识生成URL
             $name = substr($url, 1, $pos - 1);
-            $url = 'name' . substr($url, $pos + 1);
+            $url  = 'name' . substr($url, $pos + 1);
         }
         if (false === strpos($url, '://') && 0 !== strpos($url, '/')) {
             $info = parse_url($url);
-            $url = !empty($info['path']) ? $info['path'] : '';
+            $url  = !empty($info['path']) ? $info['path'] : '';
             if (isset($info['fragment'])) {
                 // 解析锚点
                 $anchor = $info['fragment'];
@@ -99,8 +101,8 @@ class BuildUrl extends Url
         }
         if ($url) {
             $checkDomain = $domain && is_string($domain) ? $domain : null;
-            $checkName = $name ?? $url . (isset($info['query']) ? '?' . $info['query'] : '');
-            $rule = $this->route->getName($checkName, $checkDomain);
+            $checkName   = $name ?? $url . (isset($info['query']) ? '?' . $info['query'] : '');
+            $rule        = $this->route->getName($checkName, $checkDomain);
             if (empty($rule) && isset($info['query'])) {
                 $rule = $this->route->getName($url, $checkDomain);
                 parse_str($info['query'], $params);
@@ -126,7 +128,7 @@ class BuildUrl extends Url
                 $binds = $this->route->getBind();
                 foreach ($binds as $key => $val) {
                     if (is_string($val) && 0 === strpos($url, $val) && substr_count($val, '/') > 1) {
-                        $url = substr($url, strlen($val) + 1);
+                        $url    = substr($url, strlen($val) + 1);
                         $domain = $key;
                         break;
                     }
@@ -170,7 +172,7 @@ class BuildUrl extends Url
             // 添加参数
             if ($this->route->config('url_common_param')) {
                 $vars = http_build_query($vars);
-                $url .= $suffix . '?' . $vars . $anchor;
+                $url  .= $suffix . '?' . $vars . $anchor;
             } else {
                 foreach ($vars as $var => $val) {
                     $val = (string)$val;

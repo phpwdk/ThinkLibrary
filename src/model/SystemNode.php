@@ -15,14 +15,14 @@
 
 declare (strict_types=1);
 
-namespace think\admin\model;
+namespace think\simple\model;
 
-use think\admin\Model;
+use think\simple\Model;
 
 /**
  * 授权节点模型
  * Class SystemNode
- * @package think\admin\model
+ * @package think\simple\model
  */
 class SystemNode extends Model
 {
@@ -34,7 +34,9 @@ class SystemNode extends Model
 
     /**
      * 格式化创建时间
+     *
      * @param string $value
+     *
      * @return string
      */
     public function getCreateAtAttr(string $value): string

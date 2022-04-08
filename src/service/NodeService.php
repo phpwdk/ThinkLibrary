@@ -15,23 +15,25 @@
 
 declare (strict_types=1);
 
-namespace think\admin\service;
+namespace think\simple\service;
 
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
-use think\admin\Service;
+use think\simple\Service;
 
 /**
  * 应用节点服务管理
  * Class NodeService
- * @package think\admin\service
+ * @package think\simple\service
  */
 class NodeService extends Service
 {
     /**
      * 驼峰转下划线规则
+     *
      * @param string $name
+     *
      * @return string
      */
     public static function nameTolower(string $name): string
@@ -45,7 +47,9 @@ class NodeService extends Service
 
     /**
      * 获取当前节点内容
+     *
      * @param string $type
+     *
      * @return string
      */
     public function getCurrent(string $type = ''): string
@@ -62,7 +66,9 @@ class NodeService extends Service
 
     /**
      * 检查并完整节点内容
+     *
      * @param null|string $node
+     *
      * @return string
      */
     public function fullnode(?string $node = ''): string
@@ -84,7 +90,9 @@ class NodeService extends Service
 
     /**
      * 获取应用列表
+     *
      * @param array $data
+     *
      * @return array
      */
     public function getModules(array $data = []): array
@@ -98,7 +106,9 @@ class NodeService extends Service
 
     /**
      * 获取所有控制器入口
+     *
      * @param boolean $force
+     *
      * @return array
      * @throws ReflectionException
      */
@@ -113,14 +123,14 @@ class NodeService extends Service
             $data = [];
         }
         /*! 排除内置方法，禁止访问内置方法 */
-        $ignores = get_class_methods('\think\admin\Controller');
+        $ignores = get_class_methods('\think\simple\Controller');
         /*! 扫描所有代码控制器节点，更新节点缓存 */
         foreach ($this->scanDirectory($this->app->getBasePath()) as $file) {
             $name = substr($file, strlen(strtr($this->app->getRootPath(), '\\', '/')) - 1);
             if (preg_match("|^([\w/]+)/(\w+)/controller/(.+)\.php$|i", $name, $matches)) {
                 [, $namespace, $appname, $classname] = $matches;
-                $class = new ReflectionClass(strtr("{$namespace}/{$appname}/controller/{$classname}", '/', '\\'));
-                $prefix = strtolower(strtr("{$appname}/{$this->nameTolower($classname)}", '\\', '/'));
+                $class         = new ReflectionClass(strtr("{$namespace}/{$appname}/controller/{$classname}", '/', '\\'));
+                $prefix        = strtolower(strtr("{$appname}/{$this->nameTolower($classname)}", '\\', '/'));
                 $data[$prefix] = $this->parseComment($class->getDocComment() ?: '', $classname);
                 foreach ($class->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
                     if (in_array($metname = $method->getName(), $ignores)) continue;
@@ -137,13 +147,15 @@ class NodeService extends Service
 
     /**
      * 解析硬节点属性
+     *
      * @param string $comment 备注内容
      * @param string $default 默认标题
+     *
      * @return array
      */
     private function parseComment(string $comment, string $default = ''): array
     {
-        $text = strtr($comment, "\n", ' ');
+        $text  = strtr($comment, "\n", ' ');
         $title = preg_replace('/^\/\*\s*\*\s*\*\s*(.*?)\s*\*.*?$/', '$1', $text);
         if (in_array(substr($title, 0, 5), ['@auth', '@menu', '@logi'])) $title = $default;
         return [
@@ -156,9 +168,11 @@ class NodeService extends Service
 
     /**
      * 获取所有PHP文件列表
-     * @param string $path 扫描目录
-     * @param array $data 额外数据
-     * @param null|string $ext 文件后缀
+     *
+     * @param string      $path 扫描目录
+     * @param array       $data 额外数据
+     * @param null|string $ext  文件后缀
+     *
      * @return array
      */
     public function scanDirectory(string $path, array $data = [], ?string $ext = 'php'): array

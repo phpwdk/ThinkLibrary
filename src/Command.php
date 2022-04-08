@@ -1,31 +1,17 @@
 <?php
-
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
 declare (strict_types=1);
 
-namespace think\admin;
+namespace think\simple;
 
-use think\admin\service\ProcessService;
-use think\admin\service\QueueService;
+use think\simple\service\ProcessService;
+use think\simple\service\QueueService;
 use think\console\Input;
 use think\console\Output;
 
 /**
  * 自定义指令基类
  * Class Command
- * @package think\admin
+ * @package think\simple
  */
 abstract class Command extends \think\console\Command
 {
@@ -43,17 +29,19 @@ abstract class Command extends \think\console\Command
 
     /**
      * 初始化指令变量
-     * @param Input $input
+     *
+     * @param Input  $input
      * @param Output $output
+     *
      * @return static
-     * @throws \think\admin\Exception
+     * @throws \think\simple\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
     protected function initialize(Input $input, Output $output): Command
     {
-        $this->queue = QueueService::instance();
+        $this->queue   = QueueService::instance();
         $this->process = ProcessService::instance();
         if (defined('WorkQueueCode')) {
             if (!$this->queue instanceof QueueService) {
@@ -68,7 +56,9 @@ abstract class Command extends \think\console\Command
 
     /**
      * 设置失败消息并结束进程
+     *
      * @param string $message 消息内容
+     *
      * @throws Exception
      */
     protected function setQueueError(string $message)
@@ -83,7 +73,9 @@ abstract class Command extends \think\console\Command
 
     /**
      * 设置成功消息并结束进程
+     *
      * @param string $message 消息内容
+     *
      * @throws Exception
      */
     protected function setQueueSuccess(string $message)
@@ -98,9 +90,11 @@ abstract class Command extends \think\console\Command
 
     /**
      * 设置进度消息并继续执行
-     * @param null|string $message 进度消息
+     *
+     * @param null|string $message  进度消息
      * @param null|string $progress 进度数值
-     * @param integer $backline 回退行数
+     * @param integer     $backline 回退行数
+     *
      * @return static
      */
     protected function setQueueProgress(?string $message = null, ?string $progress = null, int $backline = 0): Command
@@ -115,15 +109,17 @@ abstract class Command extends \think\console\Command
 
     /**
      * 更新任务进度
-     * @param integer $total 记录总和
-     * @param integer $count 当前记录
-     * @param string $message 文字描述
+     *
+     * @param integer $total    记录总和
+     * @param integer $count    当前记录
+     * @param string  $message  文字描述
      * @param integer $backline 回退行数
+     *
      * @return static
      */
     public function setQueueMessage(int $total, int $count, string $message = '', int $backline = 0): Command
     {
-        $total = max($total, 1);
+        $total  = max($total, 1);
         $prefix = str_pad("{$count}", strlen("{$total}"), '0', STR_PAD_LEFT);
         return $this->setQueueProgress("[{$prefix}/{$total}] {$message}", sprintf("%.2f", $count / $total * 100), $backline);
     }

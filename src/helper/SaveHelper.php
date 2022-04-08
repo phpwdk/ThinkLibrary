@@ -1,40 +1,28 @@
 <?php
-
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
 declare (strict_types=1);
 
-namespace think\admin\helper;
+namespace think\simple\helper;
 
-use think\admin\Helper;
+use think\simple\Helper;
 use think\db\BaseQuery;
 use think\Model;
 
 /**
  * 数据更新管理器
  * Class SaveHelper
- * @package think\admin\helper
+ * @package think\simple\helper
  */
 class SaveHelper extends Helper
 {
 
     /**
      * 逻辑器初始化
+     *
      * @param Model|BaseQuery|string $dbQuery
-     * @param array $edata 表单扩展数据
-     * @param string $field 数据对象主键
-     * @param mixed $where 额外更新条件
+     * @param array                  $edata 表单扩展数据
+     * @param string                 $field 数据对象主键
+     * @param mixed                  $where 额外更新条件
+     *
      * @return bool
      * @throws \think\db\exception\DbException
      */
@@ -61,7 +49,7 @@ class SaveHelper extends Helper
 
         // 模型自定义事件回调
         $model = $query->getModel();
-        if ($result && $model instanceof \think\admin\Model) {
+        if ($result && $model instanceof \think\simple\Model) {
             $model->onAdminSave(strval($value));
         }
 

@@ -1,42 +1,30 @@
 <?php
-
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
 declare (strict_types=1);
 
-namespace think\admin\helper;
+namespace think\simple\helper;
 
-use think\admin\Helper;
-use think\admin\service\SystemService;
+use think\simple\Helper;
+use think\simple\service\SystemService;
 use think\db\BaseQuery;
 use think\Model;
 
 /**
  * 表单视图管理器
  * Class FormHelper
- * @package think\admin\helper
+ * @package think\simple\helper
  */
 class FormHelper extends Helper
 {
 
     /**
      * 逻辑器初始化
+     *
      * @param Model|BaseQuery|string $dbQuery
-     * @param string $template 视图模板名称
-     * @param string $field 指定数据主键
-     * @param mixed $where 限定更新条件
-     * @param array $edata 表单扩展数据
+     * @param string                 $template 视图模板名称
+     * @param string                 $field    指定数据主键
+     * @param mixed                  $where    限定更新条件
+     * @param array                  $edata    表单扩展数据
+     *
      * @return void|array|boolean
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException

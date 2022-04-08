@@ -15,14 +15,14 @@
 
 declare (strict_types=1);
 
-namespace think\admin\model;
+namespace think\simple\model;
 
-use think\admin\Model;
+use think\simple\Model;
 
 /**
  * 系统配置模型
  * Class SystemConfig
- * @package think\admin\model
+ * @package think\simple\model
  */
 class SystemConfig extends Model
 {

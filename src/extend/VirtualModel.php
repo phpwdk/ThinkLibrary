@@ -1,19 +1,6 @@
 <?php
 
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
-namespace think\admin\extend;
+namespace think\simple\extend;
 
 use think\Model;
 use function Composer\Autoload\includeFile;
@@ -21,7 +8,7 @@ use function Composer\Autoload\includeFile;
 /**
  * 虚拟模型构建协议
  * Class VirtualModel
- * @package think\admin\extend
+ * @package think\simple\extend
  */
 class VirtualModel
 {
@@ -58,7 +45,7 @@ class VirtualModel
 
     public function stream_read($count)
     {
-        $content = substr($this->template, $this->position, $count);
+        $content        = substr($this->template, $this->position, $count);
         $this->position += strlen($content);
         return $content;
     }
@@ -163,9 +150,11 @@ class VirtualModel
 
     /**
      * 创建虚拟模型
+     *
      * @param mixed $name 模型名称
      * @param array $data 模型数据
      * @param mixed $conn 默认链接
+     *
      * @return Model
      */
     public static function mk(string $name, array $data = [], string $conn = ''): Model

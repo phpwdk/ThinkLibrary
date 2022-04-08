@@ -1,37 +1,25 @@
 <?php
-
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
 declare (strict_types=1);
 
-namespace think\admin\helper;
+namespace think\simple\helper;
 
-use think\admin\Helper;
-use think\admin\service\TokenService;
+use think\simple\Helper;
+use think\simple\service\TokenService;
 use think\exception\HttpResponseException;
 
 /**
  * 表单令牌验证器
  * Class TokenHelper
- * @package think\admin\helper
+ * @package think\simple\helper
  */
 class TokenHelper extends Helper
 {
 
     /**
      * 初始化验证码器
+     *
      * @param boolean $return
+     *
      * @return boolean
      */
     public function init(bool $return = false): bool
@@ -55,18 +43,21 @@ class TokenHelper extends Helper
 
     /**
      * 返回视图内容
-     * @param string $tpl 模板名称
-     * @param array $vars 模板变量
+     *
+     * @param string      $tpl  模板名称
+     * @param array       $vars 模板变量
      * @param string|null $node 授权节点
      */
     public function fetchTemplate(string $tpl = '', array $vars = [], ?string $node = null)
     {
-        throw new HttpResponseException(view($tpl, $vars, 200, function ($html) use ($node) {
-            return preg_replace_callback('/<\/form>/i', function () use ($node) {
-                $csrf = TokenService::instance()->buildFormToken($node);
-                return "<input type='hidden' name='_token_' value='{$csrf['token']}'></form>";
-            }, $html);
-        }));
+        throw new HttpResponseException(
+            view($tpl, $vars, 200, function ($html) use ($node) {
+                return preg_replace_callback('/<\/form>/i', function () use ($node) {
+                    $csrf = TokenService::instance()->buildFormToken($node);
+                    return "<input type='hidden' name='_token_' value='{$csrf['token']}'></form>";
+                }, $html);
+            })
+        );
     }
 
 }

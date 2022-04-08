@@ -16,14 +16,14 @@
 
 declare (strict_types=1);
 
-namespace think\admin\model;
+namespace think\simple\model;
 
-use think\admin\Model;
+use think\simple\Model;
 
 /**
  * 系统菜单模型
  * Class SystemMenu
- * @package think\admin\model
+ * @package think\simple\model
  */
 class SystemMenu extends Model
 {
@@ -41,7 +41,9 @@ class SystemMenu extends Model
 
     /**
      * 格式化创建时间
+     *
      * @param string $value
+     *
      * @return string
      */
     public function getCreateAtAttr(string $value): string

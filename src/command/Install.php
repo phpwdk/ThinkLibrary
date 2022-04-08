@@ -1,24 +1,10 @@
 <?php
-
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
 declare (strict_types=1);
 
-namespace think\admin\command;
+namespace think\simple\command;
 
-use think\admin\Command;
-use think\admin\service\ModuleService;
+use think\simple\Command;
+use think\simple\service\ModuleService;
 use think\console\Input;
 use think\console\input\Argument;
 use think\console\Output;
@@ -26,7 +12,7 @@ use think\console\Output;
 /**
  * 插件更新安装指令
  * Class Install
- * @package think\admin\command
+ * @package think\simple\command
  */
 class Install extends Command
 {
@@ -97,8 +83,10 @@ class Install extends Command
 
     /**
      * 任务执行入口
-     * @param Input $input
+     *
+     * @param Input  $input
      * @param Output $output
+     *
      * @return void
      */
     protected function execute(Input $input, Output $output)
@@ -108,12 +96,12 @@ class Install extends Command
             $this->output->writeln('Module name of online install cannot be empty');
         } elseif ($this->name === 'all') {
             foreach ($this->bind as $bind) {
-                $this->rules = array_merge($this->rules, $bind['rules']);
+                $this->rules  = array_merge($this->rules, $bind['rules']);
                 $this->ignore = array_merge($this->ignore, $bind['ignore']);
             }
             $this->copyFile('static') && $this->installFile();
         } elseif (isset($this->bind[$this->name])) {
-            $this->rules = $this->bind[$this->name]['rules'] ?? [];
+            $this->rules  = $this->bind[$this->name]['rules'] ?? [];
             $this->ignore = $this->bind[$this->name]['ignore'] ?? [];
             $this->copyFile($this->name) && $this->installFile();
         } else {
@@ -128,7 +116,7 @@ class Install extends Command
     private function installFile(): bool
     {
         $module = ModuleService::instance();
-        $data = $module->grenerateDifference($this->rules, $this->ignore);
+        $data   = $module->grenerateDifference($this->rules, $this->ignore);
         if (empty($data)) {
             $this->output->writeln('No need to update the file if the file comparison is consistent');
             return false;
@@ -160,7 +148,9 @@ class Install extends Command
 
     /**
      * 初始化安装文件
+     *
      * @param string $type
+     *
      * @return boolean
      */
     private function copyFile(string $type): bool

@@ -13,27 +13,25 @@
 // | github 代码仓库：https://github.com/zoujingli/ThinkLibrary
 // +----------------------------------------------------------------------
 
-namespace think\admin;
+namespace think\simple;
 
-use think\admin\helper\DeleteHelper;
-use think\admin\helper\FormHelper;
-use think\admin\helper\QueryHelper;
-use think\admin\helper\SaveHelper;
-use think\admin\service\SystemService;
+use think\simple\helper\DeleteHelper;
+use think\simple\helper\FormHelper;
+use think\simple\helper\QueryHelper;
+use think\simple\helper\SaveHelper;
+use think\simple\service\SystemService;
 use think\Container;
 
 /**
  * 基础模型类
  * Class Model
- * @see \think\db\Query
+ * @see     \think\db\Query
  * @mixin \think\db\Query
- * @package think\admin
- *
+ * @package think\simple
  * @method void onAdminSave(string $ids) 记录状态变更日志
  * @method void onAdminUpdate(string $ids) 记录更新数据日志
  * @method void onAdminInsert(string $ids) 记录新增数据日志
  * @method void onAdminDelete(string $ids) 记录删除数据日志
- *
  * @method bool mSave(array $data = [], string $field = '', mixed $where = []) static 快捷更新逻辑器
  * @method bool|null mDelete(string $field = '', mixed $where = []) static 快捷删除逻辑器
  * @method bool|array mForm(string $template = '', string $field = '', mixed $where = [], array $data = []) static 快捷表单逻辑器
@@ -71,8 +69,10 @@ abstract class Model extends \think\Model
 
     /**
      * 调用魔术方法
+     *
      * @param string $method 方法名称
-     * @param array $args 调用参数
+     * @param array  $args   调用参数
+     *
      * @return $this|false|mixed
      */
     public function __call($method, $args)
@@ -99,8 +99,10 @@ abstract class Model extends \think\Model
 
     /**
      * 静态魔术方法
+     *
      * @param string $method 方法名称
-     * @param array $args 调用参数
+     * @param array  $args   调用参数
+     *
      * @return mixed|false|integer|QueryHelper
      */
     public static function __callStatic($method, $args)

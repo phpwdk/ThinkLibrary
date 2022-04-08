@@ -15,16 +15,16 @@
 
 declare (strict_types=1);
 
-namespace think\admin\service;
+namespace think\simple\service;
 
-use think\admin\Exception;
-use think\admin\extend\FaviconExtend;
-use think\admin\Helper;
-use think\admin\model\SystemConfig;
-use think\admin\model\SystemData;
-use think\admin\model\SystemOplog;
-use think\admin\Service;
-use think\admin\storage\LocalStorage;
+use think\simple\Exception;
+use think\simple\extend\FaviconExtend;
+use think\simple\Helper;
+use think\simple\model\SystemConfig;
+use think\simple\model\SystemData;
+use think\simple\model\SystemOplog;
+use think\simple\Service;
+use think\simple\storage\LocalStorage;
 use think\App;
 use think\db\Query;
 use think\helper\Str;
@@ -33,7 +33,7 @@ use think\Model;
 /**
  * 系统参数管理服务
  * Class SystemService
- * @package think\admin\service
+ * @package think\simple\service
  */
 class SystemService extends Service
 {
@@ -46,8 +46,10 @@ class SystemService extends Service
 
     /**
      * 设置配置数据
-     * @param string $name 配置名称
-     * @param mixed $value 配置内容
+     *
+     * @param string $name  配置名称
+     * @param mixed  $value 配置内容
+     *
      * @return integer|string
      * @throws \think\db\exception\DbException
      */
@@ -63,8 +65,8 @@ class SystemService extends Service
             return $count;
         } else {
             $this->app->cache->delete('SystemConfig');
-            $map = ['type' => $type, 'name' => $field];
-            $data = array_merge($map, ['value' => $value]);
+            $map   = ['type' => $type, 'name' => $field];
+            $data  = array_merge($map, ['value' => $value]);
             $query = SystemConfig::mk()->master(true)->where($map);
             return (clone $query)->count() > 0 ? $query->update($data) : $query->insert($data);
         }
@@ -72,8 +74,10 @@ class SystemService extends Service
 
     /**
      * 读取配置数据
+     *
      * @param string $name
      * @param string $default
+     *
      * @return array|mixed|string
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -102,10 +106,12 @@ class SystemService extends Service
 
     /**
      * 数据增量保存
+     *
      * @param Model|Query|string $query 数据查询对象
-     * @param array $data 需要保存的数据，成功返回对应模型
-     * @param string $key 更新条件查询主键
-     * @param mixed $map 额外更新查询条件
+     * @param array              $data  需要保存的数据，成功返回对应模型
+     * @param string             $key   更新条件查询主键
+     * @param mixed              $map   额外更新查询条件
+     *
      * @return boolean|integer 失败返回 false, 成功返回主键值或 true
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -121,7 +127,7 @@ class SystemService extends Service
         // 写入或更新模型数据
         if ($model->save($data) === false) return false;
         // 模型自定义事件回调
-        if ($model instanceof \think\admin\Model) {
+        if ($model instanceof \think\simple\Model) {
             $model->$action(strval($model[$key] ?? ''));
         }
         $data = $model->toArray();
@@ -130,7 +136,9 @@ class SystemService extends Service
 
     /**
      * 解析缓存名称
+     *
      * @param string $rule 配置名称
+     *
      * @return array
      */
     private function _parse(string $rule): array
@@ -145,10 +153,12 @@ class SystemService extends Service
 
     /**
      * 生成最短URL地址
-     * @param string $url 路由地址
-     * @param array $vars PATH 变量
+     *
+     * @param string         $url    路由地址
+     * @param array          $vars   PATH 变量
      * @param boolean|string $suffix 后缀
      * @param boolean|string $domain 域名
+     *
      * @return string
      */
     public function sysuri(string $url = '', array $vars = [], $suffix = true, $domain = false): string
@@ -172,8 +182,10 @@ class SystemService extends Service
 
     /**
      * 保存数据内容
+     *
      * @param string $name
-     * @param mixed $value
+     * @param mixed  $value
+     *
      * @return boolean
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -197,12 +209,14 @@ class SystemService extends Service
 
     /**
      * 复制并创建表结构
-     * @param string $from 来源表名
-     * @param string $create 创建表名
-     * @param array $tables 现有表集合
-     * @param boolean $copy 是否复制
-     * @param mixed $where 复制条件
-     * @throws \think\admin\Exception
+     *
+     * @param string  $from   来源表名
+     * @param string  $create 创建表名
+     * @param array   $tables 现有表集合
+     * @param boolean $copy   是否复制
+     * @param mixed   $where  复制条件
+     *
+     * @throws \think\simple\Exception
      */
     public function copyTableStruct(string $from, string $create, array $tables = [], bool $copy = false, $where = [])
     {
@@ -221,8 +235,10 @@ class SystemService extends Service
 
     /**
      * 读取数据内容
+     *
      * @param string $name
-     * @param mixed $default
+     * @param mixed  $default
+     *
      * @return mixed
      */
     public function getData(string $name, $default = [])
@@ -237,8 +253,10 @@ class SystemService extends Service
 
     /**
      * 写入系统日志内容
+     *
      * @param string $action
      * @param string $content
+     *
      * @return boolean
      */
     public function setOplog(string $action, string $content): bool
@@ -249,8 +267,10 @@ class SystemService extends Service
 
     /**
      * 获取系统日志内容
+     *
      * @param string $action
      * @param string $content
+     *
      * @return array
      */
     public function getOplog(string $action, string $content): array
@@ -266,9 +286,11 @@ class SystemService extends Service
 
     /**
      * 打印输出数据到文件
-     * @param mixed $data 输出的数据
-     * @param boolean $new 强制替换文件
+     *
+     * @param mixed       $data 输出的数据
+     * @param boolean     $new  强制替换文件
      * @param string|null $file 文件名称
+     *
      * @return false|int
      */
     public function putDebug($data, bool $new = false, ?string $file = null)
@@ -280,9 +302,11 @@ class SystemService extends Service
 
     /**
      * 设置网页标签图标
+     *
      * @param ?string $icon 网页标签图标
+     *
      * @return boolean
-     * @throws \think\admin\Exception
+     * @throws \think\simple\Exception
      */
     public function setFavicon(?string $icon = null): bool
     {
@@ -309,13 +333,15 @@ class SystemService extends Service
 
     /**
      * 判断运行环境
+     *
      * @param string $type 运行模式（dev|demo|local）
+     *
      * @return boolean
      */
     public function checkRunMode(string $type = 'dev'): bool
     {
-        $domain = $this->app->request->host(true);
-        $isDemo = is_numeric(stripos($domain, 'thinkadmin.top'));
+        $domain  = $this->app->request->host(true);
+        $isDemo  = is_numeric(stripos($domain, 'thinkadmin.top'));
         $isLocal = in_array($domain, ['127.0.0.1', 'localhost']);
         if ($type === 'dev') return $isLocal || $isDemo;
         if ($type === 'demo') return $isDemo;
@@ -359,15 +385,17 @@ class SystemService extends Service
 
     /**
      * 设置实时运行配置
-     * @param null|mixed $mode 支持模式
+     *
+     * @param null|mixed $mode   支持模式
      * @param null|array $appmap 应用映射
      * @param null|array $domain 域名映射
+     *
      * @return boolean 是否调试模式
      */
     public function setRuntime(?string $mode = null, ?array $appmap = [], ?array $domain = []): bool
     {
-        $data = $this->getRuntime();
-        $data['mode'] = $mode ?: $data['mode'];
+        $data           = $this->getRuntime();
+        $data['mode']   = $mode ?: $data['mode'];
         $data['appmap'] = $this->uniqueArray($data['appmap'], $appmap);
         $data['domain'] = $this->uniqueArray($data['domain'], $domain);
 
@@ -384,8 +412,10 @@ class SystemService extends Service
 
     /**
      * 获取实时运行配置
-     * @param null|string $name 配置名称
-     * @param array $default 配置内容
+     *
+     * @param null|string $name    配置名称
+     * @param array       $default 配置内容
+     *
      * @return array|string
      */
     public function getRuntime(?string $name = null, array $default = [])
@@ -402,13 +432,15 @@ class SystemService extends Service
 
     /**
      * 绑定应用实时配置
+     *
      * @param array $data 配置数据
+     *
      * @return boolean 是否调试模式
      */
     public function bindRuntime(array $data = []): bool
     {
         if (empty($data)) $data = $this->getRuntime();
-        $bind['app_map'] = $this->uniqueArray($this->app->config->get('app.app_map', []), $data['appmap']);
+        $bind['app_map']     = $this->uniqueArray($this->app->config->get('app.app_map', []), $data['appmap']);
         $bind['domain_bind'] = $this->uniqueArray($this->app->config->get('app.domain_bind', []), $data['domain']);
         $this->app->config->set($bind, 'app');
         return $this->app->debug($data['mode'] !== 'product')->isDebug();
@@ -416,6 +448,7 @@ class SystemService extends Service
 
     /**
      * 初始化并运行主程序
+     *
      * @param null|App $app
      */
     public function doInit(?App $app = null)
@@ -428,7 +461,9 @@ class SystemService extends Service
 
     /**
      * 初始化命令行主程序
+     *
      * @param \think\App|null $app
+     *
      * @throws \Exception
      */
     public function doConsoleInit(?App $app = null)
@@ -440,7 +475,9 @@ class SystemService extends Service
 
     /**
      * 获取唯一数组参数
+     *
      * @param array ...$args
+     *
      * @return array
      */
     private function uniqueArray(...$args): array

@@ -1,29 +1,15 @@
 <?php
-
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
 declare (strict_types=1);
 
-namespace think\admin\storage;
+namespace think\simple\storage;
 
 use Exception;
-use think\admin\Storage;
+use think\simple\Storage;
 
 /**
  * 本地存储支持
  * Class LocalStorage
- * @package think\admin\storage
+ * @package think\simple\storage
  */
 class LocalStorage extends Storage
 {
@@ -51,9 +37,11 @@ class LocalStorage extends Storage
 
     /**
      * 获取当前实例对象
+     *
      * @param null|string $name
+     *
      * @return static
-     * @throws \think\admin\Exception
+     * @throws \think\simple\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -65,10 +53,12 @@ class LocalStorage extends Storage
 
     /**
      * 文件储存在本地
-     * @param string $name 文件名称
-     * @param string $file 文件内容
-     * @param boolean $safe 安全模式
+     *
+     * @param string      $name    文件名称
+     * @param string      $file    文件内容
+     * @param boolean     $safe    安全模式
      * @param null|string $attname 下载名称
+     *
      * @return array
      */
     public function set(string $name, string $file, bool $safe = false, ?string $attname = null): array
@@ -86,8 +76,10 @@ class LocalStorage extends Storage
 
     /**
      * 根据文件名读取文件内容
-     * @param string $name 文件名称
+     *
+     * @param string  $name 文件名称
      * @param boolean $safe 安全模式
+     *
      * @return string
      */
     public function get(string $name, bool $safe = false): string
@@ -98,8 +90,10 @@ class LocalStorage extends Storage
 
     /**
      * 删除存储的文件
-     * @param string $name 文件名称
+     *
+     * @param string  $name 文件名称
      * @param boolean $safe 安全模式
+     *
      * @return boolean
      */
     public function del(string $name, bool $safe = false): bool
@@ -113,8 +107,10 @@ class LocalStorage extends Storage
 
     /**
      * 检查文件是否已经存在
-     * @param string $name 文件名称
+     *
+     * @param string  $name 文件名称
      * @param boolean $safe 安全模式
+     *
      * @return boolean
      */
     public function has(string $name, bool $safe = false): bool
@@ -124,9 +120,11 @@ class LocalStorage extends Storage
 
     /**
      * 获取文件当前URL地址
-     * @param string $name 文件名称
-     * @param boolean $safe 安全模式
+     *
+     * @param string      $name    文件名称
+     * @param boolean     $safe    安全模式
      * @param null|string $attname 下载名称
+     *
      * @return string
      */
     public function url(string $name, bool $safe = false, ?string $attname = null): string
@@ -136,8 +134,10 @@ class LocalStorage extends Storage
 
     /**
      * 获取文件存储路径
-     * @param string $name 文件名称
+     *
+     * @param string  $name 文件名称
      * @param boolean $safe 安全模式
+     *
      * @return string
      */
     public function path(string $name, bool $safe = false): string
@@ -149,9 +149,11 @@ class LocalStorage extends Storage
 
     /**
      * 获取文件存储信息
-     * @param string $name 文件名称
-     * @param boolean $safe 安全模式
+     *
+     * @param string      $name    文件名称
+     * @param boolean     $safe    安全模式
      * @param null|string $attname 下载名称
+     *
      * @return array
      */
     public function info(string $name, bool $safe = false, ?string $attname = null): array

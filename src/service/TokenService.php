@@ -15,14 +15,14 @@
 
 declare (strict_types=1);
 
-namespace think\admin\service;
+namespace think\simple\service;
 
-use think\admin\Service;
+use think\simple\Service;
 
 /**
  * 表单令牌管理服务
  * Class TokenService
- * @package think\admin\service
+ * @package think\simple\service
  */
 class TokenService extends Service
 {
@@ -49,7 +49,7 @@ class TokenService extends Service
      */
     protected function initialize()
     {
-        $this->name = $this->getCacheName();
+        $this->name  = $this->getCacheName();
         $this->items = $this->getCacheList(true);
         $this->app->event->listen('HttpEnd', function () {
             TokenService::instance()->saveCacheData();
@@ -86,8 +86,10 @@ class TokenService extends Service
 
     /**
      * 验证 CSRF 是否有效
+     *
      * @param null|string $token 表单令牌
-     * @param null|string $node 授权节点
+     * @param null|string $node  授权节点
+     *
      * @return boolean
      */
     public function checkFormToken(?string $token = null, ?string $node = null): bool
@@ -99,7 +101,9 @@ class TokenService extends Service
 
     /**
      * 清理表单 CSRF 数据
+     *
      * @param null|string $token
+     *
      * @return $this
      */
     public function clearFormToken(?string $token = null): TokenService
@@ -110,7 +114,9 @@ class TokenService extends Service
 
     /**
      * 生成表单 CSRF 数据
+     *
      * @param null|string $node
+     *
      * @return array
      */
     public function buildFormToken(?string $node = null): array
@@ -131,8 +137,9 @@ class TokenService extends Service
 
     /**
      * 设置缓存数据
+     *
      * @param string $token
-     * @param array $value
+     * @param array  $value
      */
     private function setCacheItem(string $token, array $value)
     {
@@ -141,6 +148,7 @@ class TokenService extends Service
 
     /**
      * 删除缓存
+     *
      * @param string $token
      */
     private function delCacheItem(string $token)
@@ -150,7 +158,9 @@ class TokenService extends Service
 
     /**
      * 获取指定缓存
+     *
      * @param string $token
+     *
      * @return mixed
      */
     private function getCacheItem(string $token)
@@ -161,7 +171,9 @@ class TokenService extends Service
 
     /**
      * 获取缓存列表
+     *
      * @param bool $clear 强制清理
+     *
      * @return array
      */
     private function getCacheList(bool $clear = false): array

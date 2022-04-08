@@ -1,24 +1,11 @@
 <?php
 
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
-namespace think\admin;
+namespace think\simple;
 
 /**
  * 自定义数据异常
  * Class Exception
- * @package think\admin
+ * @package think\simple
  */
 class Exception extends \Exception
 {
@@ -30,14 +17,15 @@ class Exception extends \Exception
 
     /**
      * Exception constructor.
-     * @param string $message
+     *
+     * @param string  $message
      * @param integer $code
-     * @param mixed $data
+     * @param mixed   $data
      */
     public function __construct($message = "", $code = 0, $data = [])
     {
-        $this->code = $code;
-        $this->data = $data;
+        $this->code    = $code;
+        $this->data    = $data;
         $this->message = $message;
         parent::__construct($message, $code);
     }
@@ -53,6 +41,7 @@ class Exception extends \Exception
 
     /**
      * 设置异常停止数据
+     *
      * @param mixed $data
      */
     public function setData($data)

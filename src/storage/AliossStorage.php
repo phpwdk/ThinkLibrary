@@ -1,30 +1,16 @@
 <?php
-
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
 declare (strict_types=1);
 
-namespace think\admin\storage;
+namespace think\simple\storage;
 
-use think\admin\Exception;
-use think\admin\extend\HttpExtend;
-use think\admin\Storage;
+use think\simple\Exception;
+use think\simple\extend\HttpExtend;
+use think\simple\Storage;
 
 /**
  * 阿里云OSS存储支持
  * Class AliossStorage
- * @package think\admin\storage
+ * @package think\simple\storage
  */
 class AliossStorage extends Storage
 {
@@ -54,7 +40,7 @@ class AliossStorage extends Storage
 
     /**
      * 初始化入口
-     * @throws \think\admin\Exception
+     * @throws \think\simple\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -62,12 +48,12 @@ class AliossStorage extends Storage
     protected function initialize()
     {
         // 读取配置文件
-        $this->point = sysconf('storage.alioss_point');
-        $this->bucket = sysconf('storage.alioss_bucket');
+        $this->point     = sysconf('storage.alioss_point');
+        $this->bucket    = sysconf('storage.alioss_bucket');
         $this->accessKey = sysconf('storage.alioss_access_key');
         $this->secretKey = sysconf('storage.alioss_secret_key');
         // 计算链接前缀
-        $type = strtolower(sysconf('storage.alioss_http_protocol'));
+        $type   = strtolower(sysconf('storage.alioss_http_protocol'));
         $domain = strtolower(sysconf('storage.alioss_http_domain'));
         if ($type === 'auto') {
             $this->prefix = "//{$domain}";
@@ -78,9 +64,11 @@ class AliossStorage extends Storage
 
     /**
      * 获取当前实例对象
+     *
      * @param null|string $name
+     *
      * @return static
-     * @throws \think\admin\Exception
+     * @throws \think\simple\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -92,19 +80,21 @@ class AliossStorage extends Storage
 
     /**
      * 上传文件内容
-     * @param string $name 文件名称
-     * @param string $file 文件内容
-     * @param boolean $safe 安全模式
+     *
+     * @param string      $name    文件名称
+     * @param string      $file    文件内容
+     * @param boolean     $safe    安全模式
      * @param null|string $attname 下载名称
+     *
      * @return array
      */
     public function set(string $name, string $file, bool $safe = false, ?string $attname = null): array
     {
-        $token = $this->buildUploadToken($name);
-        $data = ['key' => $name];
-        $data['policy'] = $token['policy'];
-        $data['Signature'] = $token['signature'];
-        $data['OSSAccessKeyId'] = $this->accessKey;
+        $token                         = $this->buildUploadToken($name);
+        $data                          = ['key' => $name];
+        $data['policy']                = $token['policy'];
+        $data['Signature']             = $token['signature'];
+        $data['OSSAccessKeyId']        = $this->accessKey;
         $data['success_action_status'] = '200';
         if (is_string($attname) && strlen($attname) > 0) {
             $data['Content-Disposition'] = 'inline;filename=' . urlencode($attname);
@@ -119,8 +109,10 @@ class AliossStorage extends Storage
 
     /**
      * 根据文件名读取文件内容
-     * @param string $name 文件名称
+     *
+     * @param string  $name 文件名称
      * @param boolean $safe 安全模式
+     *
      * @return string
      */
     public function get(string $name, bool $safe = false): string
@@ -130,8 +122,10 @@ class AliossStorage extends Storage
 
     /**
      * 删除存储的文件
-     * @param string $name 文件名称
+     *
+     * @param string  $name 文件名称
      * @param boolean $safe 安全模式
+     *
      * @return boolean
      */
     public function del(string $name, bool $safe = false): bool
@@ -145,13 +139,15 @@ class AliossStorage extends Storage
 
     /**
      * 判断文件是否存在
-     * @param string $name 文件名称
+     *
+     * @param string  $name 文件名称
      * @param boolean $safe 安全模式
+     *
      * @return boolean
      */
     public function has(string $name, bool $safe = false): bool
     {
-        $file = $this->delSuffix($name);
+        $file   = $this->delSuffix($name);
         $result = HttpExtend::request('HEAD', "http://{$this->bucket}.{$this->point}/{$file}", [
             'returnHeader' => true, 'headers' => $this->headerSign('HEAD', $file),
         ]);
@@ -160,9 +156,11 @@ class AliossStorage extends Storage
 
     /**
      * 获取文件当前URL地址
-     * @param string $name 文件名称
-     * @param boolean $safe 安全模式
+     *
+     * @param string      $name    文件名称
+     * @param boolean     $safe    安全模式
      * @param null|string $attname 下载名称
+     *
      * @return string
      */
     public function url(string $name, bool $safe = false, ?string $attname = null): string
@@ -172,8 +170,10 @@ class AliossStorage extends Storage
 
     /**
      * 获取文件存储路径
-     * @param string $name 文件名称
+     *
+     * @param string  $name 文件名称
      * @param boolean $safe 安全模式
+     *
      * @return string
      */
     public function path(string $name, bool $safe = false): string
@@ -183,9 +183,11 @@ class AliossStorage extends Storage
 
     /**
      * 获取文件存储信息
-     * @param string $name 文件名称
-     * @param boolean $safe 安全模式
+     *
+     * @param string      $name    文件名称
+     * @param boolean     $safe    安全模式
      * @param null|string $attname 下载名称
+     *
      * @return array
      */
     public function info(string $name, bool $safe = false, ?string $attname = null): array
@@ -208,18 +210,22 @@ class AliossStorage extends Storage
 
     /**
      * 获取文件上传令牌
-     * @param string $name 文件名称
-     * @param integer $expires 有效时间
+     *
+     * @param string      $name    文件名称
+     * @param integer     $expires 有效时间
      * @param null|string $attname 下载名称
+     *
      * @return array
      */
     public function buildUploadToken(string $name, int $expires = 3600, ?string $attname = null): array
     {
-        $data = [
-            'policy'  => base64_encode(json_encode([
-                'conditions' => [['content-length-range', 0, 1048576000]],
-                'expiration' => date('Y-m-d\TH:i:s.000\Z', time() + $expires),
-            ])),
+        $data              = [
+            'policy'  => base64_encode(
+                json_encode([
+                    'conditions' => [['content-length-range', 0, 1048576000]],
+                    'expiration' => date('Y-m-d\TH:i:s.000\Z', time() + $expires),
+                ])
+            ),
             'keyid'   => $this->accessKey,
             'siteurl' => $this->url($name, false, $attname),
         ];
@@ -229,9 +235,11 @@ class AliossStorage extends Storage
 
     /**
      * 操作请求头信息签名
+     *
      * @param string $method 请求方式
      * @param string $soruce 资源名称
-     * @param array $header 请求头信息
+     * @param array  $header 请求头信息
+     *
      * @return array
      */
     private function headerSign(string $method, string $soruce, array $header = []): array
@@ -248,8 +256,8 @@ class AliossStorage extends Storage
                 $content .= strtolower($key) . ":{$value}\n";
             }
         }
-        $content = rawurldecode($content) . "/{$this->bucket}/{$soruce}";
-        $signature = base64_encode(hash_hmac('sha1', $content, $this->secretKey, true));
+        $content                 = rawurldecode($content) . "/{$this->bucket}/{$soruce}";
+        $signature               = base64_encode(hash_hmac('sha1', $content, $this->secretKey, true));
         $header['Authorization'] = "OSS {$this->accessKey}:{$signature}";
         foreach ($header as $key => $value) $header[$key] = "{$key}: {$value}";
         return array_values($header);

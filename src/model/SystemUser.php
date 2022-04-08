@@ -15,15 +15,15 @@
 
 declare (strict_types=1);
 
-namespace think\admin\model;
+namespace think\simple\model;
 
-use think\admin\Model;
+use think\simple\Model;
 use think\model\relation\HasOne;
 
 /**
  * 系统用户模型
  * Class SystemUser
- * @package think\admin\model
+ * @package think\simple\model
  */
 class SystemUser extends Model
 {
@@ -41,11 +41,13 @@ class SystemUser extends Model
 
     /**
      * 获取用户数据
-     * @param mixed $map 数据查询规则
-     * @param array $data 用户数据集合
-     * @param string $field 原外连字段
+     *
+     * @param mixed  $map    数据查询规则
+     * @param array  $data   用户数据集合
+     * @param string $field  原外连字段
      * @param string $target 关联目标字段
      * @param string $fields 关联数据字段
+     *
      * @return array
      */
     public function items($map, array &$data = [], string $field = 'uuid', string $target = 'user_info', string $fields = 'username,nickname,headimg,status,is_deleted'): array
@@ -73,7 +75,9 @@ class SystemUser extends Model
 
     /**
      * 默认头像处理
+     *
      * @param mixed $value
+     *
      * @return string
      */
     public function getHeadimgAttr($value): string
@@ -90,7 +94,9 @@ class SystemUser extends Model
 
     /**
      * 格式化登录时间
+     *
      * @param string $value
+     *
      * @return string
      */
     public function getLoginAtAttr(string $value): string
@@ -100,7 +106,9 @@ class SystemUser extends Model
 
     /**
      * 格式化创建时间
+     *
      * @param string $value
+     *
      * @return string
      */
     public function getCreateAtAttr(string $value): string

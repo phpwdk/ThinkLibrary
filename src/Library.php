@@ -13,20 +13,20 @@
 // | github 代码仓库：https://github.com/zoujingli/ThinkLibrary
 // +----------------------------------------------------------------------
 
-namespace think\admin;
+namespace think\simple;
 
 use Closure;
-use think\admin\command\Database;
-use think\admin\command\Install;
-use think\admin\command\Menu;
-use think\admin\command\Queue;
-use think\admin\command\Replace;
-use think\admin\command\Version;
-use think\admin\multiple\BuildUrl;
-use think\admin\multiple\command\Build;
-use think\admin\multiple\Multiple;
-use think\admin\service\AdminService;
-use think\admin\service\SystemService;
+use think\simple\command\Database;
+use think\simple\command\Install;
+use think\simple\command\Menu;
+use think\simple\command\Queue;
+use think\simple\command\Replace;
+use think\simple\command\Version;
+use think\simple\multiple\BuildUrl;
+use think\simple\multiple\command\Build;
+use think\simple\multiple\Multiple;
+use think\simple\service\AdminService;
+use think\simple\service\SystemService;
 use think\middleware\LoadLangPack;
 use think\middleware\SessionInit;
 use think\Request;
@@ -36,7 +36,7 @@ use function Composer\Autoload\includeFile;
 /**
  * 模块注册服务
  * Class Library
- * @package think\admin
+ * @package think\simple
  */
 class Library extends Service
 {
@@ -53,9 +53,11 @@ class Library extends Service
         // 服务初始化处理
         $this->app->event->listen('HttpRun', function (Request $request) {
             // 配置默认输入过滤
-            $request->filter([function ($value) {
-                return is_string($value) ? xss_safe($value) : $value;
-            }]);
+            $request->filter([
+                function ($value) {
+                    return is_string($value) ? xss_safe($value) : $value;
+                },
+            ]);
             // 注册多应用中间键
             $this->app->middleware->add(Multiple::class);
             // 判断访问模式兼容处理
@@ -121,11 +123,11 @@ class Library extends Service
                 if (($origin = $request->header('origin', '*')) !== '*') {
                     if (is_string($hosts = $this->app->config->get('app.cors_host', []))) $hosts = str2arr($hosts);
                     if ($this->app->config->get('app.cors_auto', 1) || in_array(parse_url(strtolower($origin), PHP_URL_HOST), $hosts)) {
-                        $headers = $this->app->config->get('app.cors_headers', 'Api-Name,Api-Type,Api-Token,User-Form-Token,User-Token,Token');
-                        $header['Access-Control-Allow-Origin'] = $origin;
-                        $header['Access-Control-Allow-Methods'] = $this->app->config->get('app.cors_methods', 'GET,PUT,POST,PATCH,DELETE');
-                        $header['Access-Control-Allow-Headers'] = "Authorization,Content-Type,If-Match,If-Modified-Since,If-None-Match,If-Unmodified-Since,X-Requested-With,{$headers}";
-                        $header['Access-Control-Expose-Headers'] = $headers;
+                        $headers                                    = $this->app->config->get('app.cors_headers', 'Api-Name,Api-Type,Api-Token,User-Form-Token,User-Token,Token');
+                        $header['Access-Control-Allow-Origin']      = $origin;
+                        $header['Access-Control-Allow-Methods']     = $this->app->config->get('app.cors_methods', 'GET,PUT,POST,PATCH,DELETE');
+                        $header['Access-Control-Allow-Headers']     = "Authorization,Content-Type,If-Match,If-Modified-Since,If-None-Match,If-Unmodified-Since,X-Requested-With,{$headers}";
+                        $header['Access-Control-Expose-Headers']    = $headers;
                         $header['Access-Control-Allow-Credentials'] = 'true';
                     }
                 }

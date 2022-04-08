@@ -15,11 +15,11 @@
 
 declare (strict_types=1);
 
-namespace think\admin\service;
+namespace think\simple\service;
 
-use think\admin\extend\DataExtend;
-use think\admin\model\SystemMenu;
-use think\admin\Service;
+use think\simple\extend\DataExtend;
+use think\simple\model\SystemMenu;
+use think\simple\Service;
 
 /**
  * 系统菜单管理服务
@@ -55,14 +55,16 @@ class MenuService extends Service
     public function getTree(): array
     {
         $query = SystemMenu::mk()->where(['status' => 1]);
-        $list = $query->order('sort desc,id asc')->select()->toArray();
+        $list  = $query->order('sort desc,id asc')->select()->toArray();
         if (function_exists('admin_menu_filter')) admin_menu_filter($list);
         return $this->build(DataExtend::arr2tree($list));
     }
 
     /**
      * 后台主菜单权限过滤
+     *
      * @param array $menus 当前菜单列表
+     *
      * @return array
      * @throws \ReflectionException
      */
@@ -86,7 +88,7 @@ class MenuService extends Service
             } elseif (!!$menu['node'] && !$service->check($menu['node'])) {
                 unset($menus[$key]);
             } else {
-                $node = join('/', array_slice(explode('/', $menu['url']), 0, 3));
+                $node        = join('/', array_slice(explode('/', $menu['url']), 0, 3));
                 $menu['url'] = url($menu['url'])->build() . ($menu['params'] ? '?' . $menu['params'] : '');
                 if (!$service->check($node)) unset($menus[$key]);
             }

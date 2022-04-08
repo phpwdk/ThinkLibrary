@@ -15,29 +15,31 @@
 
 declare (strict_types=1);
 
-namespace think\admin\service;
+namespace think\simple\service;
 
-use think\admin\Service;
+use think\simple\Service;
 
 /**
  * 图形验证码服务
  * Class CaptchaService
- * @package think\admin\service
+ * @package think\simple\service
  */
 class CaptchaService extends Service
 {
-    private $code; // 验证码
-    private $uniqid; // 唯一序号
-    private $charset = 'ABCDEFGHKMNPRSTUVWXYZ23456789'; // 随机因子
-    private $width = 130; // 图片宽度
-    private $height = 50; // 图片高度
-    private $length = 4; // 验证码长度
-    private $fontfile; // 指定字体文件
-    private $fontsize = 20; // 指定字体大小
+    private $code;                                                                                                                                   // 验证码
+    private $uniqid;                                                                                                                                 // 唯一序号
+    private $charset  = 'ABCDEFGHKMNPRSTUVWXYZ23456789';                                                                                              // 随机因子
+    private $width   = 130;                                                                                                                          // 图片宽度
+    private $height  = 50;                                                                                                                           // 图片高度
+    private $length  = 4;                                                                                                                            // 验证码长度
+    private $fontfile;                                                                                                                               // 指定字体文件
+    private $fontsize = 20;                                                                                                                          // 指定字体大小
 
     /**
      * 验证码服务初始化
+     *
      * @param array $config
+     *
      * @return static
      */
     public function initialize(array $config = []): CaptchaService
@@ -61,7 +63,9 @@ class CaptchaService extends Service
 
     /**
      * 动态切换配置
+     *
      * @param array $config
+     *
      * @return $this
      */
     public function config(array $config = []): CaptchaService
@@ -104,15 +108,17 @@ class CaptchaService extends Service
     {
         return [
             'code'   => $this->getCode(),
-            'data'   => $this->getData(),
+            'data' => $this->getData(),
             'uniqid' => $this->getUniqid(),
         ];
     }
 
     /**
      * 检查验证码是否正确
-     * @param string $code 需要验证的值
+     *
+     * @param string      $code   需要验证的值
      * @param null|string $uniqid 验证码编号
+     *
      * @return boolean
      */
     public function check(string $code, ?string $uniqid = null): bool
@@ -143,7 +149,7 @@ class CaptchaService extends Service
     private function createImage(): string
     {
         // 生成背景
-        $img = imagecreatetruecolor($this->width, $this->height);
+        $img   = imagecreatetruecolor($this->width, $this->height);
         $color = imagecolorallocate($img, mt_rand(220, 255), mt_rand(220, 255), mt_rand(220, 255));
         imagefilledrectangle($img, 0, $this->height, $this->width, 0, $color);
         // 生成线条

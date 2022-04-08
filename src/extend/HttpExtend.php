@@ -1,34 +1,22 @@
 <?php
-
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
 declare (strict_types=1);
 
-namespace think\admin\extend;
+namespace think\simple\extend;
 
 /**
  * CURL模拟请求扩展
  * Class HttpExtend
- * @package think\admin\extend
+ * @package think\simple\extend
  */
 class HttpExtend
 {
     /**
      * 以 GET 模拟网络请求
-     * @param string $location HTTP请求地址
-     * @param array|string $data GET请求参数
-     * @param array $options CURL请求参数
+     *
+     * @param string       $location HTTP请求地址
+     * @param array|string $data     GET请求参数
+     * @param array        $options  CURL请求参数
+     *
      * @return boolean|string
      */
     public static function get(string $location, $data = [], array $options = [])
@@ -39,9 +27,11 @@ class HttpExtend
 
     /**
      * 以 POST 模拟网络请求
-     * @param string $location HTTP请求地址
-     * @param array|string $data POST请求数据
-     * @param array $options CURL请求参数
+     *
+     * @param string       $location HTTP请求地址
+     * @param array|string $data     POST请求数据
+     * @param array        $options  CURL请求参数
+     *
      * @return boolean|string
      */
     public static function post(string $location, $data = [], array $options = [])
@@ -52,12 +42,14 @@ class HttpExtend
 
     /**
      * 以 FormData 模拟网络请求
-     * @param string $url 模拟请求地址
-     * @param array $data 模拟请求参数数据
-     * @param array $file 提交文件 [field,name,content]
-     * @param array $header 请求头部信息，默认带 Content-type
-     * @param string $method 模拟请求的方式 [GET,POST,PUT]
+     *
+     * @param string  $url          模拟请求地址
+     * @param array   $data         模拟请求参数数据
+     * @param array   $file         提交文件 [field,name,content]
+     * @param array   $header       请求头部信息，默认带 Content-type
+     * @param string  $method       模拟请求的方式 [GET,POST,PUT]
      * @param boolean $returnHeader 是否返回头部信息
+     *
      * @return boolean|string
      */
     public static function submit(string $url, array $data = [], array $file = [], array $header = [], string $method = 'POST', bool $returnHeader = true)
@@ -75,16 +67,18 @@ class HttpExtend
             $line[] = "";
             $line[] = $file['content'];
         }
-        $line[] = "--{$boundary}--";
+        $line[]   = "--{$boundary}--";
         $header[] = "Content-type:multipart/form-data;boundary={$boundary}";
         return static::request($method, $url, ['data' => join("\r\n", $line), 'returnHeader' => $returnHeader, 'headers' => $header]);
     }
 
     /**
      * 以 CURL 模拟网络请求
-     * @param string $method 模拟请求方式
+     *
+     * @param string $method   模拟请求方式
      * @param string $location 模拟请求地址
-     * @param array $options 请求参数[headers,query,data,cookie,cookie_file,timeout,returnHeader]
+     * @param array  $options  请求参数[headers,query,data,cookie,cookie_file,timeout,returnHeader]
+     *
      * @return boolean|string
      */
     public static function request(string $method, string $location, array $options = [])

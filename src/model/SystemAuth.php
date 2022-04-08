@@ -15,14 +15,14 @@
 
 declare (strict_types=1);
 
-namespace think\admin\model;
+namespace think\simple\model;
 
-use think\admin\Model;
+use think\simple\Model;
 
 /**
  * 用户权限模型
  * Class SystemAuth
- * @package think\admin\model
+ * @package think\simple\model
  */
 class SystemAuth extends Model
 {
@@ -52,6 +52,7 @@ class SystemAuth extends Model
 
     /**
      * 删除权限事件
+     *
      * @param string $ids
      */
     public function onAdminDelete(string $ids)
@@ -64,7 +65,9 @@ class SystemAuth extends Model
 
     /**
      * 格式化创建时间
+     *
      * @param string $value
+     *
      * @return string
      */
     public function getCreateAtAttr(string $value): string

@@ -15,18 +15,18 @@
 
 declare (strict_types=1);
 
-namespace think\admin\service;
+namespace think\simple\service;
 
-use think\admin\extend\DataExtend;
-use think\admin\model\SystemAuth;
-use think\admin\model\SystemNode;
-use think\admin\model\SystemUser;
-use think\admin\Service;
+use think\simple\extend\DataExtend;
+use think\simple\model\SystemAuth;
+use think\simple\model\SystemNode;
+use think\simple\model\SystemUser;
+use think\simple\Service;
 
 /**
  * 系统权限管理服务
  * Class AdminService
- * @package think\admin\service
+ * @package think\simple\service
  */
 class AdminService extends Service
 {
@@ -78,8 +78,10 @@ class AdminService extends Service
 
     /**
      * 获取用户扩展数据
+     *
      * @param null|string $field
-     * @param null|mixed $default
+     * @param null|mixed  $default
+     *
      * @return array|mixed
      */
     public function getUserData(?string $field = null, $default = null)
@@ -91,8 +93,10 @@ class AdminService extends Service
 
     /**
      * 设置用户扩展数据
-     * @param array $data
+     *
+     * @param array   $data
      * @param boolean $replace
+     *
      * @return boolean|integer
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -120,7 +124,9 @@ class AdminService extends Service
 
     /**
      * 设置用户主题名称
+     *
      * @param string $theme 主题名称
+     *
      * @return boolean|integer
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -134,7 +140,9 @@ class AdminService extends Service
     /**
      * 检查指定节点授权
      * --- 需要读取缓存或扫描所有节点
+     *
      * @param null|string $node
+     *
      * @return boolean
      * @throws \ReflectionException
      */
@@ -145,8 +153,8 @@ class AdminService extends Service
         // 兼容 windows 控制器不区分大小写的验证问题
         foreach ($methods as $key => $rule) {
             if (preg_match('#.*?/.*?_.*?#', $key)) {
-                $attr = explode('/', $key);
-                $attr[1] = strtr($attr[1], ['_' => '']);
+                $attr                      = explode('/', $key);
+                $attr[1]                   = strtr($attr[1], ['_' => '']);
                 $methods[join('/', $attr)] = $rule;
             }
         }
@@ -164,7 +172,9 @@ class AdminService extends Service
 
     /**
      * 获取授权节点列表
+     *
      * @param array $checkeds
+     *
      * @return array
      * @throws \ReflectionException
      */
@@ -181,8 +191,8 @@ class AdminService extends Service
             }
         }
         foreach (array_keys($nodes) as $key) foreach ($methods as $node => $method) if (stripos($key, $node . '/') !== false) {
-            $pnode = substr($node, 0, strripos($node, '/'));
-            $nodes[$node] = ['node' => $node, 'title' => $method['title'], 'pnode' => $pnode, 'checked' => in_array($node, $checkeds)];
+            $pnode         = substr($node, 0, strripos($node, '/'));
+            $nodes[$node]  = ['node' => $node, 'title' => $method['title'], 'pnode' => $pnode, 'checked' => in_array($node, $checkeds)];
             $nodes[$pnode] = ['node' => $pnode, 'title' => ucfirst($pnode), 'pnode' => '', 'checked' => in_array($pnode, $checkeds)];
         }
         return DataExtend::arr2tree(array_reverse($nodes), 'node', 'pnode', '_sub_');
@@ -190,7 +200,9 @@ class AdminService extends Service
 
     /**
      * 初始化用户权限
+     *
      * @param boolean $force 强刷权限
+     *
      * @return $this
      */
     public function apply(bool $force = false): AdminService

@@ -15,7 +15,7 @@
 
 declare (strict_types=1);
 
-namespace think\admin;
+namespace think\simple;
 
 use think\App;
 use think\Container;
@@ -23,7 +23,7 @@ use think\Container;
 /**
  * 自定义服务基类
  * Class Service
- * @package think\admin
+ * @package think\simple
  */
 abstract class Service
 {
@@ -35,6 +35,7 @@ abstract class Service
 
     /**
      * Service constructor.
+     *
      * @param App $app
      */
     public function __construct(App $app)
@@ -52,8 +53,10 @@ abstract class Service
 
     /**
      * 静态实例对象
-     * @param array $var 实例参数
+     *
+     * @param array   $var 实例参数
      * @param boolean $new 创建新实例
+     *
      * @return static|mixed
      */
     public static function instance(array $var = [], bool $new = false)

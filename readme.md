@@ -2,10 +2,10 @@
 >
 > 该项目引用于 ThinkLibrary 6.0.29
 
-ThinkLibrary 6.0 for ThinkPHP 6.0
+ThinkLibrary for ThinkPHP 6.0
 ---
 
-ThinkLibrary 6.0 是针对 ThinkPHP 6.0 版本封装的一套工具类库，方便快速构建 Web 应用。
+ThinkLibrary 是针对 ThinkPHP 6.0 版本封装的一套工具类库，方便快速构建 Web 应用。
 
 ## 包含组件
 
@@ -25,12 +25,12 @@ ThinkLibrary 6.0 是针对 ThinkPHP 6.0 版本封装的一套工具类库，方�
 ## 使用说明
 
 * ThinkLibrary 需要 Composer 支持
-* 安装命令 ` composer require phpwdk/think-library dev-main`
-* 案例代码： 控制器需要继承 `think\admin\Controller`，然后`$this`就可能使用全部功能
+* 安装命令 ` composer require phpwdk/think-library 3.0.x-dev`
+* 案例代码： 控制器需要继承 `think\simple\Controller`，然后`$this`就可能使用全部功能
 
 ```php
 // 定义 MyController 控制器
-class MyController extend \think\admin\Controller {
+class MyController extend \think\simple\Controller {
 
     // 指定当前数据表名
     protected $dbQuery = '数据表名';
@@ -175,49 +175,49 @@ sysconf('storage.qiniu_secret_key', '接口授权SecretKey');
 
 
 // 生成文件名称(链接url或文件md5)
-$filename = \think\admin\Storage::name($url, $ext, $prv, $fun);
+$filename = \think\simple\Storage::name($url, $ext, $prv, $fun);
 
 // 获取文件内容（自动存储方式）
-$result = \think\admin\Storage::get($filename);
+$result = \think\simple\Storage::get($filename);
 
 // 保存内容到文件（自动存储方式）
-$result = \think\admin\Storage::save($filename, $content);
+$result = \think\simple\Storage::save($filename, $content);
 
 // 判断文件是否存在
-boolean \think\admin\Storage::has($filename);
+boolean \think\simple\Storage::has($filename);
 
 // 获取文件信息
-$result = \think\admin\Storage::info($filename);
+$result = \think\simple\Storage::info($filename);
 
 //指定存储类型（调用方法）
-$result = \think\admin\Storage::instance('local')->save($filename, $content);
-$result = \think\admin\Storage::instance('qiniu')->save($filename, $content);
-$result = \think\admin\Storage::instance('txcos')->save($filename, $content);
-$result = \think\admin\Storage::instance('alioss')->save($filename, $content);
+$result = \think\simple\Storage::instance('local')->save($filename, $content);
+$result = \think\simple\Storage::instance('qiniu')->save($filename, $content);
+$result = \think\simple\Storage::instance('txcos')->save($filename, $content);
+$result = \think\simple\Storage::instance('alioss')->save($filename, $content);
 
 // 读取文件内容
-$result = \think\admin\Storage::instance('local')->get($filename);
-$result = \think\admin\Storage::instance('qiniu')->get($filename);
-$result = \think\admin\Storage::instance('txcos')->get($filename);
-$result = \think\admin\Storage::instance('alioss')->get($filename);
+$result = \think\simple\Storage::instance('local')->get($filename);
+$result = \think\simple\Storage::instance('qiniu')->get($filename);
+$result = \think\simple\Storage::instance('txcos')->get($filename);
+$result = \think\simple\Storage::instance('alioss')->get($filename);
 
 // 生成 URL 访问地址
-$result = \think\admin\Storage::instance('local')->url($filename);
-$result = \think\admin\Storage::instance('qiniu')->url($filename);
-$result = \think\admin\Storage::instance('txcos')->url($filename);
-$result = \think\admin\Storage::instance('alioss')->url($filename);
+$result = \think\simple\Storage::instance('local')->url($filename);
+$result = \think\simple\Storage::instance('qiniu')->url($filename);
+$result = \think\simple\Storage::instance('txcos')->url($filename);
+$result = \think\simple\Storage::instance('alioss')->url($filename);
 
 // 检查文件是否存在
-boolean \think\admin\Storage::instance('local')->has($filename);
-boolean \think\admin\Storage::instance('qiniu')->has($filename);
-boolean \think\admin\Storage::instance('txcos')->has($filename);
-boolean \think\admin\Storage::instance('alioss')->has($filename);
+boolean \think\simple\Storage::instance('local')->has($filename);
+boolean \think\simple\Storage::instance('qiniu')->has($filename);
+boolean \think\simple\Storage::instance('txcos')->has($filename);
+boolean \think\simple\Storage::instance('alioss')->has($filename);
 
 // 生成文件信息
-$resutl = \think\admin\Storage::instance('local')->info($filename);
-$resutl = \think\admin\Storage::instance('qiniu')->info($filename);
-$resutl = \think\admin\Storage::instance('txcos')->info($filename);
-$resutl = \think\admin\Storage::instance('alioss')->info($filename);
+$resutl = \think\simple\Storage::instance('local')->info($filename);
+$resutl = \think\simple\Storage::instance('qiniu')->info($filename);
+$resutl = \think\simple\Storage::instance('txcos')->info($filename);
+$resutl = \think\simple\Storage::instance('alioss')->info($filename);
 ```
 
 #### 通用数据保存

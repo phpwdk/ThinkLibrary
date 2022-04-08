@@ -1,23 +1,9 @@
 <?php
-
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
 declare (strict_types=1);
 
-namespace think\admin\helper;
+namespace think\simple\helper;
 
-use think\admin\Helper;
+use think\simple\Helper;
 use think\db\BaseQuery;
 use think\db\Query;
 use think\Model;
@@ -25,8 +11,8 @@ use think\Model;
 /**
  * 搜索条件处理器
  * Class QueryHelper
- * @package think\admin\helper
- * @see \think\db\Query
+ * @package think\simple\helper
+ * @see     \think\db\Query
  * @mixin Query
  */
 class QueryHelper extends Helper
@@ -60,15 +46,17 @@ class QueryHelper extends Helper
 
     /**
      * 逻辑器初始化
+     *
      * @param Model|BaseQuery|string $dbQuery
-     * @param string|array|null $input 输入数据
-     * @param callable|null $callable 初始回调
+     * @param string|array|null      $input    输入数据
+     * @param callable|null          $callable 初始回调
+     *
      * @return $this
      * @throws \think\db\exception\DbException
      */
     public function init($dbQuery, $input = null, ?callable $callable = null): QueryHelper
     {
-        $this->page = PageHelper::instance();
+        $this->page  = PageHelper::instance();
         $this->input = $this->getInputData($input);
         $this->query = $this->page->autoSortQuery($dbQuery);
         if (is_callable($callable)) {
@@ -79,10 +67,12 @@ class QueryHelper extends Helper
 
     /**
      * 设置 Like 查询条件
-     * @param string|array $fields 查询字段
-     * @param string $split 前后分割符
-     * @param string|array|null $input 输入数据
-     * @param string $alias 别名分割符
+     *
+     * @param string|array      $fields 查询字段
+     * @param string            $split  前后分割符
+     * @param string|array|null $input  输入数据
+     * @param string            $alias  别名分割符
+     *
      * @return $this
      */
     public function like($fields, string $split = '', $input = null, string $alias = '#'): QueryHelper
@@ -102,9 +92,11 @@ class QueryHelper extends Helper
 
     /**
      * 设置 Equal 查询条件
-     * @param string|array $fields 查询字段
-     * @param string|array|null $input 输入类型
-     * @param string $alias 别名分割符
+     *
+     * @param string|array      $fields 查询字段
+     * @param string|array|null $input  输入类型
+     * @param string            $alias  别名分割符
+     *
      * @return $this
      */
     public function equal($fields, $input = null, string $alias = '#'): QueryHelper
@@ -124,10 +116,12 @@ class QueryHelper extends Helper
 
     /**
      * 设置 IN 区间查询
-     * @param string|array $fields 查询字段
-     * @param string $split 输入分隔符
-     * @param string|array|null $input 输入数据
-     * @param string $alias 别名分割符
+     *
+     * @param string|array      $fields 查询字段
+     * @param string            $split  输入分隔符
+     * @param string|array|null $input  输入数据
+     * @param string            $alias  别名分割符
+     *
      * @return $this
      */
     public function in($fields, string $split = ',', $input = null, string $alias = '#'): QueryHelper
@@ -149,9 +143,11 @@ class QueryHelper extends Helper
     /**
      * 两字段范围查询
      * @example field1:field2#field,field11:field22#field00
-     * @param string|array $fields 查询字段
-     * @param string|array|null $input 输入数据
-     * @param string $alias 别名分割符
+     *
+     * @param string|array      $fields 查询字段
+     * @param string|array|null $input  输入数据
+     * @param string            $alias  别名分割符
+     *
      * @return $this
      */
     public function valueRange($fields, $input = null, string $alias = '#'): QueryHelper
@@ -175,10 +171,12 @@ class QueryHelper extends Helper
 
     /**
      * 设置内容区间查询
-     * @param string|array $fields 查询字段
-     * @param string $split 输入分隔符
-     * @param string|array|null $input 输入数据
-     * @param string $alias 别名分割符
+     *
+     * @param string|array      $fields 查询字段
+     * @param string            $split  输入分隔符
+     * @param string|array|null $input  输入数据
+     * @param string            $alias  别名分割符
+     *
      * @return $this
      */
     public function valueBetween($fields, string $split = ' ', $input = null, string $alias = '#'): QueryHelper
@@ -188,10 +186,12 @@ class QueryHelper extends Helper
 
     /**
      * 设置日期时间区间查询
-     * @param string|array $fields 查询字段
-     * @param string $split 输入分隔符
-     * @param string|array|null $input 输入数据
-     * @param string $alias 别名分割符
+     *
+     * @param string|array      $fields 查询字段
+     * @param string            $split  输入分隔符
+     * @param string|array|null $input  输入数据
+     * @param string            $alias  别名分割符
+     *
      * @return $this
      */
     public function dateBetween($fields, string $split = ' - ', $input = null, string $alias = '#'): QueryHelper
@@ -204,10 +204,12 @@ class QueryHelper extends Helper
 
     /**
      * 设置时间戳区间查询
-     * @param string|array $fields 查询字段
-     * @param string $split 输入分隔符
-     * @param string|array|null $input 输入数据
-     * @param string $alias 别名分割符
+     *
+     * @param string|array      $fields 查询字段
+     * @param string            $split  输入分隔符
+     * @param string|array|null $input  输入数据
+     * @param string            $alias  别名分割符
+     *
      * @return $this
      */
     public function timeBetween($fields, string $split = ' - ', $input = null, string $alias = '#'): QueryHelper
@@ -220,11 +222,13 @@ class QueryHelper extends Helper
 
     /**
      * 实例化分页管理器
-     * @param boolean $page 是否启用分页
-     * @param boolean $display 是否渲染模板
-     * @param boolean|integer $total 集合分页记录数
-     * @param integer $limit 集合每页记录数
-     * @param string $template 模板文件名称
+     *
+     * @param boolean         $page     是否启用分页
+     * @param boolean         $display  是否渲染模板
+     * @param boolean|integer $total    集合分页记录数
+     * @param integer         $limit    集合每页记录数
+     * @param string          $template 模板文件名称
+     *
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -256,7 +260,9 @@ class QueryHelper extends Helper
 
     /**
      * 中间回调处理
+     *
      * @param callable $after
+     *
      * @return $this
      */
     public function filter(callable $after): QueryHelper
@@ -267,9 +273,11 @@ class QueryHelper extends Helper
 
     /**
      * Layui.Table 组件数据
-     * @param ?callable $befor 表单前置操作
-     * @param ?callable $after 表单后置操作
-     * @param string $template 前端模板文件
+     *
+     * @param ?callable $befor    表单前置操作
+     * @param ?callable $after    表单后置操作
+     * @param string    $template 前端模板文件
+     *
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -291,8 +299,10 @@ class QueryHelper extends Helper
 
     /**
      * QueryHelper call.
+     *
      * @param string $name 调用方法名称
-     * @param array $args 调用参数内容
+     * @param array  $args 调用参数内容
+     *
      * @return $this
      */
     public function __call(string $name, array $args): QueryHelper
@@ -305,11 +315,13 @@ class QueryHelper extends Helper
 
     /**
      * 设置区域查询条件
-     * @param string|array $fields 查询字段
-     * @param string $split 输入分隔符
-     * @param string|array|null $input 输入数据
-     * @param string $alias 别名分割符
-     * @param callable|null $callback 回调函数
+     *
+     * @param string|array      $fields   查询字段
+     * @param string            $split    输入分隔符
+     * @param string|array|null $input    输入数据
+     * @param string            $alias    别名分割符
+     * @param callable|null     $callback 回调函数
+     *
      * @return $this
      */
     private function setBetweenWhere($fields, string $split = ' ', $input = null, string $alias = '#', ?callable $callback = null): QueryHelper
@@ -334,7 +346,9 @@ class QueryHelper extends Helper
 
     /**
      * 获取输入数据
+     *
      * @param string|array|null $input
+     *
      * @return array
      */
     private function getInputData($input): array

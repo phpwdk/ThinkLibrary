@@ -13,7 +13,7 @@
 
 declare (strict_types=1);
 
-namespace think\admin\multiple\command;
+namespace think\simple\multiple\command;
 
 use think\console\Command;
 use think\console\Input;
@@ -36,7 +36,7 @@ class Build extends Command
     protected function execute(Input $input, Output $output)
     {
         $this->basePath = $this->app->getBasePath();
-        $app = $input->getArgument('app') ?: '';
+        $app            = $input->getArgument('app') ?: '';
         if (is_file($this->basePath . 'build.php')) {
             $list = include $this->basePath . 'build.php';
         } else {
@@ -49,8 +49,10 @@ class Build extends Command
     /**
      * 创建应用
      * @access protected
-     * @param string $app 应用名
-     * @param array $list 目录结构
+     *
+     * @param string $app  应用名
+     * @param array  $list 目录结构
+     *
      * @return void
      */
     protected function buildApp(string $app, array $list = []): void
@@ -59,7 +61,7 @@ class Build extends Command
             // 创建应用目录
             mkdir($this->basePath . $app);
         }
-        $appPath = $this->basePath . ($app ? $app . DIRECTORY_SEPARATOR : '');
+        $appPath   = $this->basePath . ($app ? $app . DIRECTORY_SEPARATOR : '');
         $namespace = 'app' . ($app ? '\\' . $app : '');
         // 创建配置文件和公共文件
         $this->buildCommon($app);
@@ -81,15 +83,15 @@ class Build extends Command
             } else {
                 // 生成相关MVC文件
                 foreach ($file as $val) {
-                    $val = trim($val);
+                    $val      = trim($val);
                     $filename = $appPath . $path . DIRECTORY_SEPARATOR . $val . '.php';
-                    $space = $namespace . '\\' . $path;
-                    $class = $val;
+                    $space    = $namespace . '\\' . $path;
+                    $class    = $val;
                     switch ($path) {
                         case 'controller': // 控制器
                             if ($this->app->config->get('route.controller_suffix')) {
                                 $filename = $appPath . $path . DIRECTORY_SEPARATOR . $val . 'Controller.php';
-                                $class = $val . 'Controller';
+                                $class    = $val . 'Controller';
                             }
                             $content = "<?php" . PHP_EOL . "namespace {$space};" . PHP_EOL . PHP_EOL . "class {$class}" . PHP_EOL . "{" . PHP_EOL . PHP_EOL . "}";
                             break;
@@ -116,13 +118,15 @@ class Build extends Command
     /**
      * 创建应用的欢迎页面
      * @access protected
-     * @param string $app 目录
+     *
+     * @param string $app       目录
      * @param string $namespace 类库命名空间
+     *
      * @return void
      */
     protected function buildHello(string $app, string $namespace): void
     {
-        $suffix = $this->app->config->get('route.controller_suffix') ? 'Controller' : '';
+        $suffix   = $this->app->config->get('route.controller_suffix') ? 'Controller' : '';
         $filename = $this->basePath . ($app ? $app . DIRECTORY_SEPARATOR : '') . 'controller' . DIRECTORY_SEPARATOR . 'Index' . $suffix . '.php';
         if (!is_file($filename)) {
             $content = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'stubs' . DIRECTORY_SEPARATOR . 'controller.stub');
@@ -135,7 +139,9 @@ class Build extends Command
     /**
      * 创建应用的公共文件
      * @access protected
+     *
      * @param string $app 目录
+     *
      * @return void
      */
     protected function buildCommon(string $app): void
@@ -152,7 +158,9 @@ class Build extends Command
     /**
      * 创建目录
      * @access protected
+     *
      * @param string $dirname 目录名称
+     *
      * @return void
      */
     protected function checkDirBuild(string $dirname): void

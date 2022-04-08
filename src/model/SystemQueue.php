@@ -15,20 +15,22 @@
 
 declare (strict_types=1);
 
-namespace think\admin\model;
+namespace think\simple\model;
 
-use think\admin\Model;
+use think\simple\Model;
 
 /**
  * 系统任务模型
  * Class SystemQueue
- * @package think\admin\model
+ * @package think\simple\model
  */
 class SystemQueue extends Model
 {
     /**
      * 格式化计划时间
+     *
      * @param mixed $value
+     *
      * @return string
      */
     public function getExecTimeAttr($value): string
@@ -38,7 +40,9 @@ class SystemQueue extends Model
 
     /**
      * 执行开始时间处理
+     *
      * @param mixed $value
+     *
      * @return string
      */
     public function getEnterTimeAttr($value): string
@@ -48,8 +52,10 @@ class SystemQueue extends Model
 
     /**
      * 执行结束时间处理
+     *
      * @param mixed $value
      * @param array $data
+     *
      * @return string
      */
     public function getOuterTimeAttr($value, array $data): string
@@ -63,7 +69,9 @@ class SystemQueue extends Model
 
     /**
      * 格式化创建时间
+     *
      * @param string $value
+     *
      * @return string
      */
     public function getCreateAtAttr(string $value): string

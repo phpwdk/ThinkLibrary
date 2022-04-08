@@ -15,16 +15,16 @@
 
 declare (strict_types=1);
 
-namespace think\admin\service;
+namespace think\simple\service;
 
-use think\admin\extend\CodeExtend;
-use think\admin\extend\HttpExtend;
-use think\admin\Service;
+use think\simple\extend\CodeExtend;
+use think\simple\extend\HttpExtend;
+use think\simple\Service;
 
 /**
  * 百度快递100物流查询
  * Class ExpressService
- * @package think\admin\service
+ * @package think\simple\service
  */
 class ExpressService extends Service
 {
@@ -65,7 +65,7 @@ class ExpressService extends Service
             $clentip = join('.', [rand(1, 254), rand(1, 254), rand(1, 254), rand(1, 254)]);
         }
         // 创建 CURL 请求模拟参数
-        $this->options['headers'] = ['Host:express.baidu.com', "CLIENT-IP:{$clentip}", "X-FORWARDED-FOR:{$clentip}"];
+        $this->options['headers']     = ['Host:express.baidu.com', "CLIENT-IP:{$clentip}", "X-FORWARDED-FOR:{$clentip}"];
         $this->options['cookie_file'] = $this->app->getRootPath() . 'runtime/.cok';
         // 每 10 秒重置 cookie 文件
         if (file_exists($this->options['cookie_file']) && filectime($this->options['cookie_file']) + 10 < time()) {
@@ -76,22 +76,24 @@ class ExpressService extends Service
 
     /**
      * 通过百度快递100应用查询物流信息
-     * @param string $code 快递公司编辑
+     *
+     * @param string $code   快递公司编辑
      * @param string $number 快递物流编号
-     * @param array $list 快递路径列表
+     * @param array  $list   快递路径列表
+     *
      * @return array
      */
     public function express(string $code, string $number, array $list = []): array
     {
         // 新状态：1-新订单,2-在途中,3-签收,4-问题件
         // 原状态：0-在途，1-揽收，2-疑难，3-签收，4-退签，5-派件，6-退回，7-转投，8-清关，14-拒签
-        $ckey = md5("{$code}{$number}");
-        $cache = $this->app->cache->get($ckey, []);
+        $ckey    = md5("{$code}{$number}");
+        $cache   = $this->app->cache->get($ckey, []);
         $message = [1 => '新订单', 2 => '在途中', 3 => '签收', 4 => '问题件'];
         if (!empty($cache)) return $cache;
         for ($i = 0; $i < 6; $i++) if (is_array($result = $this->doExpress($code, $number))) {
             if (isset($result['data']['info']['context']) && isset($result['data']['info']['state'])) {
-                $state = intval($result['data']['info']['state']);
+                $state  = intval($result['data']['info']['state']);
                 $status = in_array($state, [0, 1, 5, 7, 8]) ? 2 : ($state === 3 ? 3 : 4);
                 foreach ($result['data']['info']['context'] as $vo) $list[] = ['time' => date('Y-m-d H:i:s', intval($vo['time'])), 'context' => $vo['desc']];
                 $result = ['message' => $message[$status] ?? $result['msg'], 'status' => $status, 'express' => $code, 'number' => $number, 'data' => $list];
@@ -113,8 +115,10 @@ class ExpressService extends Service
 
     /**
      * 执行百度快递100应用查询请求
-     * @param string $code 快递公司编号
+     *
+     * @param string $code   快递公司编号
      * @param string $number 快递单单号
+     *
      * @return mixed
      */
     private function doExpress(string $code, string $number)
@@ -126,7 +130,9 @@ class ExpressService extends Service
 
     /**
      * 获取快递查询接口
+     *
      * @param integer $type 类型数据
+     *
      * @return string|array
      */
     private function getQueryData(int $type)
@@ -143,7 +149,7 @@ class ExpressService extends Service
                 return $expressUri;
             }
             if ($type === 2 && preg_match('#"isShowScan":false,"common":.*?(\[.*?\]).*?#i', $content, $items)) {
-                $attr = json_decode($items[1], true);
+                $attr       = json_decode($items[1], true);
                 $expressCom = array_combine(array_column($attr, 'code'), array_column($attr, 'name'));
                 $this->app->cache->set('express_kuaidi_com', $expressCom, 20);
                 return $expressCom;

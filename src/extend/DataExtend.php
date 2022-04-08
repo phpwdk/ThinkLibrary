@@ -15,22 +15,24 @@
 
 declare (strict_types=1);
 
-namespace think\admin\extend;
+namespace think\simple\extend;
 
 /**
  * 数据处理扩展
  * Class DataExtend
- * @package think\admin\extend
+ * @package think\simple\extend
  */
 class DataExtend
 {
 
     /**
      * 一维数组生成数据树
-     * @param array $its 待处理数据
+     *
+     * @param array  $its 待处理数据
      * @param string $cid 自己的主键
      * @param string $pid 上级的主键
      * @param string $sub 子数组名称
+     *
      * @return array
      */
     public static function arr2tree(array $its, string $cid = 'id', string $pid = 'pid', string $sub = 'sub'): array
@@ -42,10 +44,12 @@ class DataExtend
 
     /**
      * 一维数组生成数据树
-     * @param array $its 待处理数据
-     * @param string $cid 自己的主键
-     * @param string $pid 上级的主键
+     *
+     * @param array  $its  待处理数据
+     * @param string $cid  自己的主键
+     * @param string $pid  上级的主键
      * @param string $path 当前 PATH
+     *
      * @return array
      */
     public static function arr2table(array $its, string $cid = 'id', string $pid = 'pid', string $path = 'path'): array
@@ -73,10 +77,12 @@ class DataExtend
 
     /**
      * 获取数据树子ID集合
-     * @param array $list 数据列表
-     * @param mixed $value 起始有效ID值
-     * @param string $ckey 当前主键ID名称
-     * @param string $pkey 上级主键ID名称
+     *
+     * @param array  $list  数据列表
+     * @param mixed  $value 起始有效ID值
+     * @param string $ckey  当前主键ID名称
+     * @param string $pkey  上级主键ID名称
+     *
      * @return array
      */
     public static function getArrSubIds(array $list, $value = 0, string $ckey = 'id', string $pkey = 'pid'): array

@@ -1,31 +1,17 @@
 <?php
-
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
 declare (strict_types=1);
 
-namespace think\admin\service;
+namespace think\simple\service;
 
-use think\admin\extend\HttpExtend;
-use think\admin\extend\Parsedown;
-use think\admin\Library;
-use think\admin\Service;
+use think\simple\extend\HttpExtend;
+use think\simple\extend\Parsedown;
+use think\simple\Library;
+use think\simple\Service;
 
 /**
  * 系统模块管理
  * Class ModuleService
- * @package think\admin\service
+ * @package think\simple\service
  */
 class ModuleService extends Service
 {
@@ -52,10 +38,10 @@ class ModuleService extends Service
      */
     public function initialize()
     {
-        $this->root = $this->app->getRootPath();
+        $this->root    = $this->app->getRootPath();
         $this->version = trim(Library::VERSION, 'v');
-        $maxVersion = strstr($this->version, '.', true);
-        $this->server = "https://v{$maxVersion}.thinkadmin.top";
+        $maxVersion    = strstr($this->version, '.', true);
+        $this->server  = "https://v{$maxVersion}.thinkadmin.top";
     }
 
     /**
@@ -119,7 +105,9 @@ class ModuleService extends Service
 
     /**
      * 安装或更新模块
+     *
      * @param string $name 模块名称
+     *
      * @return array
      */
     public function install(string $name): array
@@ -145,7 +133,9 @@ class ModuleService extends Service
 
     /**
      * 获取系统模块信息
+     *
      * @param array $data
+     *
      * @return array
      */
     public function getModules(array $data = []): array
@@ -165,9 +155,11 @@ class ModuleService extends Service
 
     /**
      * 获取文件信息列表
-     * @param array $rules 文件规则
+     *
+     * @param array $rules  文件规则
      * @param array $ignore 忽略规则
-     * @param array $data 扫描结果列表
+     * @param array $data   扫描结果列表
+     *
      * @return array
      */
     public function getChanges(array $rules, array $ignore = [], array $data = []): array
@@ -187,7 +179,9 @@ class ModuleService extends Service
 
     /**
      * 检查文件是否可下载
+     *
      * @param string $name 文件名称
+     *
      * @return boolean
      */
     public function checkAllowDownload(string $name): bool
@@ -210,16 +204,20 @@ class ModuleService extends Service
 
     /**
      * 获取文件差异数据
-     * @param array $rules 查询规则
+     *
+     * @param array $rules  查询规则
      * @param array $ignore 忽略规则
      * @param array $result 差异数据
+     *
      * @return array
      */
     public function grenerateDifference(array $rules = [], array $ignore = [], array $result = []): array
     {
-        $online = json_decode(HttpExtend::post($this->server . '/admin/api.update/node', [
-            'rules' => json_encode($rules), 'ignore' => json_encode($ignore),
-        ]), true);
+        $online = json_decode(
+            HttpExtend::post($this->server . '/admin/api.update/node', [
+                'rules' => json_encode($rules), 'ignore' => json_encode($ignore),
+            ]), true
+        );
         if (empty($online['code'])) return $result;
         $change = $this->getChanges($online['data']['rules'] ?? [], $online['data']['ignore'] ?? []);
         foreach ($this->_grenerateDifferenceContrast($online['data']['list'], $change['list']) as $file) {
@@ -232,7 +230,9 @@ class ModuleService extends Service
 
     /**
      * 尝试下载并更新文件
+     *
      * @param array $file 文件信息
+     *
      * @return array
      */
     public function updateFileByDownload(array $file): array
@@ -272,7 +272,9 @@ class ModuleService extends Service
 
     /**
      * 获取模块版本信息
+     *
      * @param string $name 模块名称
+     *
      * @return bool|array|null
      */
     private function _getModuleVersion(string $name)
@@ -288,7 +290,9 @@ class ModuleService extends Service
 
     /**
      * 下载更新文件内容
+     *
      * @param string $encode
+     *
      * @return boolean|integer
      */
     private function _downloadUpdateFile(string $encode)
@@ -303,6 +307,7 @@ class ModuleService extends Service
 
     /**
      * 清理空目录
+     *
      * @param string $path
      */
     private function _removeEmptyDirectory(string $path)
@@ -314,7 +319,9 @@ class ModuleService extends Service
 
     /**
      * 获取模块信息路径
+     *
      * @param string $name 模块名称
+     *
      * @return string
      */
     private function _getModuleInfoPath(string $name): string
@@ -325,8 +332,10 @@ class ModuleService extends Service
 
     /**
      * 根据线上线下生成操作数组
+     *
      * @param array $serve 线上文件数据
      * @param array $local 本地文件数据
+     *
      * @return array
      */
     private function _grenerateDifferenceContrast(array $serve = [], array $local = []): array
@@ -335,7 +344,7 @@ class ModuleService extends Service
         $serve = array_combine(array_column($serve, 'name'), array_column($serve, 'hash'));
         $local = array_combine(array_column($local, 'name'), array_column($local, 'hash'));
         foreach ($serve as $name => $hash) {
-            $type = isset($local[$name]) ? ($hash === $local[$name] ? null : 'mod') : 'add';
+            $type         = isset($local[$name]) ? ($hash === $local[$name] ? null : 'mod') : 'add';
             $diffy[$name] = ['type' => $type, 'name' => $name];
         }
         foreach ($local as $name => $hash) if (!isset($serve[$name])) {
@@ -347,7 +356,9 @@ class ModuleService extends Service
 
     /**
      * 获取目录文件列表
+     *
      * @param mixed $path 扫描目录
+     *
      * @return array
      */
     private function _scanLocalFileHashList(string $path): array

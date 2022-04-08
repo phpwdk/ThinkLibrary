@@ -1,25 +1,11 @@
 <?php
-
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
 declare (strict_types=1);
 
-namespace think\admin\command;
+namespace think\simple\command;
 
-use think\admin\Command;
-use think\admin\Exception;
-use think\admin\service\SystemService;
+use think\simple\Command;
+use think\simple\Exception;
+use think\simple\service\SystemService;
 use think\console\Input;
 use think\console\input\Argument;
 use think\console\Output;
@@ -27,7 +13,7 @@ use think\console\Output;
 /**
  * 数据库修复优化指令
  * Class Database
- * @package think\admin\command
+ * @package think\simple\command
  */
 class Database extends Command
 {
@@ -43,8 +29,10 @@ class Database extends Command
 
     /**
      * 任务执行入口
-     * @param Input $input
+     *
+     * @param Input  $input
      * @param Output $output
+     *
      * @return void
      */
     protected function execute(Input $input, Output $output): void

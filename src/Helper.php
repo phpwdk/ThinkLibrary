@@ -1,23 +1,9 @@
 <?php
-
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
 declare (strict_types=1);
 
-namespace think\admin;
+namespace think\simple;
 
-use think\admin\extend\VirtualModel;
+use think\simple\extend\VirtualModel;
 use think\App;
 use think\Container;
 use think\db\BaseQuery;
@@ -28,7 +14,7 @@ use think\Model;
 /**
  * 控制器挂件
  * Class Helper
- * @package think\admin
+ * @package think\simple
  */
 abstract class Helper
 {
@@ -58,22 +44,25 @@ abstract class Helper
 
     /**
      * Helper constructor.
-     * @param App $app
+     *
+     * @param App        $app
      * @param Controller $class
      */
     public function __construct(App $app, Controller $class)
     {
-        $this->app = $app;
+        $this->app   = $app;
         $this->class = $class;
         // 计算指定输出格式
-        $output = $app->request->request('output', 'default');
-        $method = $app->request->method() ?: ($app->request->isCli() ? 'cli' : 'nil');
+        $output       = $app->request->request('output', 'default');
+        $method       = $app->request->method() ?: ($app->request->isCli() ? 'cli' : 'nil');
         $this->output = strtolower("{$method}.{$output}");
     }
 
     /**
      * 实例对象反射
+     *
      * @param array $args
+     *
      * @return static
      */
     public static function instance(...$args): Helper
@@ -83,7 +72,9 @@ abstract class Helper
 
     /**
      * 获取数据库查询对象
+     *
      * @param Model|BaseQuery|string $query
+     *
      * @return Query|Mongo|BaseQuery
      */
     public static function buildQuery($query)
@@ -104,9 +95,11 @@ abstract class Helper
 
     /**
      * 动态创建模型对象
+     *
      * @param mixed $name 模型名称
      * @param array $data 初始数据
      * @param mixed $conn 指定连接
+     *
      * @return Model
      */
     public static function buildModel(string $name, array $data = [], string $conn = ''): Model

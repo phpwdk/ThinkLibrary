@@ -13,14 +13,14 @@
 // | github 代码仓库：https://github.com/zoujingli/ThinkLibrary
 // +----------------------------------------------------------------------
 
-namespace think\admin\extend;
+namespace think\simple\extend;
 
-use think\admin\Exception;
+use think\simple\Exception;
 
 /**
  * 网站 ICO 文件生成工具
  * Class FaviconExtend
- * @package think\admin\extend
+ * @package think\simple\extend
  */
 class FaviconExtend
 {
@@ -32,9 +32,11 @@ class FaviconExtend
 
     /**
      * Constructor - 创建一个新的 ICO 生成器
+     *
      * @param ?string $file 源图像文件的路径
-     * @param array $size 图片文件尺寸 [W1,H1]
-     * @throws \think\admin\Exception
+     * @param array   $size 图片文件尺寸 [W1,H1]
+     *
+     * @throws \think\simple\Exception
      */
     function __construct(?string $file = null, array $size = [])
     {
@@ -64,8 +66,9 @@ class FaviconExtend
      * 添加图像到生成器中
      *
      * @param string $file 图像文件路径
-     * @param array $size 图像文件尺寸
-     * @throws \think\admin\Exception
+     * @param array  $size 图像文件尺寸
+     *
+     * @throws \think\simple\Exception
      */
     public function addImage(string $file, array $size = []): FaviconExtend
     {
@@ -94,6 +97,7 @@ class FaviconExtend
      * 将 ICO 内容写入到文件
      *
      * @param string $file 写入文件路径
+     *
      * @return boolean
      */
     public function saveIco(string $file): bool
@@ -121,12 +125,12 @@ class FaviconExtend
             return false;
         }
         [$pixelData, $entrySize] = ['', 16];
-        $data = pack('vvv', 0, 1, count($this->images));
+        $data   = pack('vvv', 0, 1, count($this->images));
         $offset = 6 + ($entrySize * count($this->images));
         foreach ($this->images as $image) {
-            $data .= pack('CCCCvvVV', $image['width'], $image['height'], $image['colors'], 0, 1, $image['pixel'], $image['size'], $offset);
+            $data      .= pack('CCCCvvVV', $image['width'], $image['height'], $image['colors'], 0, 1, $image['pixel'], $image['size'], $offset);
             $pixelData .= $image['data'];
-            $offset += $image['size'];
+            $offset    += $image['size'];
         }
         $data .= $pixelData;
         unset($pixelData);
@@ -142,17 +146,17 @@ class FaviconExtend
         [$pixelData, $opacityData, $opacityValue] = [[], [], 0];
         for ($y = $height - 1; $y >= 0; $y--) {
             for ($x = 0; $x < $width; $x++) {
-                $color = imagecolorat($im, $x, $y);
-                $alpha = ($color & 0x7F000000) >> 24;
-                $alpha = (1 - ($alpha / 127)) * 255;
-                $color &= 0xFFFFFF;
-                $color |= 0xFF000000 & ($alpha << 24);
-                $pixelData[] = $color;
-                $opacity = ($alpha <= 127) ? 1 : 0;
+                $color        = imagecolorat($im, $x, $y);
+                $alpha        = ($color & 0x7F000000) >> 24;
+                $alpha        = (1 - ($alpha / 127)) * 255;
+                $color        &= 0xFFFFFF;
+                $color        |= 0xFF000000 & ($alpha << 24);
+                $pixelData[]  = $color;
+                $opacity      = ($alpha <= 127) ? 1 : 0;
                 $opacityValue = ($opacityValue << 1) | $opacity;
                 if ((($x + 1) % 32) == 0) {
                     $opacityData[] = $opacityValue;
-                    $opacityValue = 0;
+                    $opacityValue  = 0;
                 }
             }
             if (($x % 32) > 0) {
@@ -160,14 +164,14 @@ class FaviconExtend
                     $opacityValue = $opacityValue << 1;
                 }
                 $opacityData[] = $opacityValue;
-                $opacityValue = 0;
+                $opacityValue  = 0;
             }
         }
 
         $imageHeaderSize = 40;
-        $colorMaskSize = $width * $height * 4;
+        $colorMaskSize   = $width * $height * 4;
         $opacityMaskSize = (ceil($width / 32) * 4) * $height;
-        $data = pack('VVVvvVVVVVV', 40, $width, ($height * 2), 1, 32, 0, 0, 0, 0, 0, 0);
+        $data            = pack('VVVvvVVVVVV', 40, $width, ($height * 2), 1, 32, 0, 0, 0, 0, 0, 0);
         foreach ($pixelData as $color) $data .= pack('V', $color);
         foreach ($opacityData as $opacity) $data .= pack('N', $opacity);
 
@@ -181,7 +185,9 @@ class FaviconExtend
 
     /**
      * 读取图片资源
+     *
      * @param string $file 文件路径
+     *
      * @return false|\GdImage|resource
      */
     private function loadImageFile(string $file)

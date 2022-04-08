@@ -31,13 +31,13 @@
       "src/common.php"
     ],
     "psr-4": {
-      "think\\admin\\": "src"
+      "think\\simple\\": "src"
     }
   },
   "extra": {
     "think": {
       "services": [
-        "think\\admin\\Library"
+        "think\\simple\\Library"
       ]
     }
   }

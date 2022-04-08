@@ -1,24 +1,10 @@
 <?php
-
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
 declare (strict_types=1);
 
-namespace think\admin\helper;
+namespace think\simple\helper;
 
-use think\admin\Helper;
-use think\admin\service\AdminService;
+use think\simple\Helper;
+use think\simple\service\AdminService;
 use think\db\BaseQuery;
 use think\db\Query;
 use think\exception\HttpResponseException;
@@ -27,18 +13,20 @@ use think\Model;
 /**
  * 列表处理管理器
  * Class PageHelper
- * @package think\admin\helper
+ * @package think\simple\helper
  */
 class PageHelper extends Helper
 {
     /**
      * 逻辑器初始化
+     *
      * @param Model|BaseQuery|string $dbQuery
-     * @param boolean $page 是否启用分页
-     * @param boolean $display 是否渲染模板
-     * @param boolean|integer $total 集合分页记录数
-     * @param integer $limit 集合每页记录数
-     * @param string $template 模板文件名称
+     * @param boolean                $page     是否启用分页
+     * @param boolean                $display  是否渲染模板
+     * @param boolean|integer        $total    集合分页记录数
+     * @param integer                $limit    集合每页记录数
+     * @param string                 $template 模板文件名称
+     *
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -48,7 +36,7 @@ class PageHelper extends Helper
     {
         $query = $this->autoSortQuery($dbQuery);
         if ($page) {
-            $get = $this->app->request->get();
+            $get    = $this->app->request->get();
             $limits = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200];
             if ($limit <= 1) {
                 $limit = $get['limit'] ?? $this->app->cookie->get('limit', 20);
@@ -56,15 +44,15 @@ class PageHelper extends Helper
                     $this->app->cookie->set('limit', ($limit = intval($limit >= 5 ? $limit : 20)) . '');
                 }
             }
-            $inner = strpos($get['spm'] ?? '', 'm-') === 0;
+            $inner  = strpos($get['spm'] ?? '', 'm-') === 0;
             $prefix = $inner ? (sysuri('admin/index/index') . '#') : '';
             // 生成分页数据
-            $data = ($paginate = $query->paginate(['list_rows' => $limit, 'query' => $get], $this->getCount($query, $total)))->toArray();
+            $data   = ($paginate = $query->paginate(['list_rows' => $limit, 'query' => $get], $this->getCount($query, $total)))->toArray();
             $result = ['page' => ['limit' => $data['per_page'], 'total' => $data['total'], 'pages' => $data['last_page'], 'current' => $data['current_page']], 'list' => $data['data']];
             // 分页跳转参数
             $select = "<select onchange='location.href=this.options[this.selectedIndex].value'>";
             if (in_array($limit, $limits)) foreach ($limits as $num) {
-                $url = $this->app->request->baseUrl() . '?' . http_build_query(array_merge($get, ['limit' => $num, 'page' => 1]));
+                $url    = $this->app->request->baseUrl() . '?' . http_build_query(array_merge($get, ['limit' => $num, 'page' => 1]));
                 $select .= sprintf('<option data-num="%d" value="%s" %s>%d</option>', $num, $prefix . $url, $limit === $num ? 'selected' : '', $num);
             } else {
                 $select .= "<option selected>{$limit}</option>";
@@ -87,8 +75,10 @@ class PageHelper extends Helper
 
     /**
      * 组件 Layui.Table 处理
+     *
      * @param Model|BaseQuery|string $dbQuery
-     * @param string $template
+     * @param string                 $template
+     *
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -100,7 +90,7 @@ class PageHelper extends Helper
             return PageHelper::instance()->init($dbQuery);
         }
         if ($this->output === 'get.layui.table') {
-            $get = $this->app->request->get();
+            $get   = $this->app->request->get();
             $query = $this->autoSortQuery($dbQuery);
             // 根据参数排序
             if (isset($get['_field_']) && isset($get['_order_'])) {
@@ -108,11 +98,11 @@ class PageHelper extends Helper
             }
             // 数据分页处理
             if (empty($get['page']) || empty($get['limit'])) {
-                $data = $query->select()->toArray();
+                $data   = $query->select()->toArray();
                 $result = ['msg' => '', 'code' => 0, 'count' => count($data), 'data' => $data];
             } else {
-                $cfg = ['list_rows' => $get['limit'], 'query' => $get];
-                $data = $query->paginate($cfg, $this->getCount($query))->toArray();
+                $cfg    = ['list_rows' => $get['limit'], 'query' => $get];
+                $data   = $query->paginate($cfg, $this->getCount($query))->toArray();
                 $result = ['msg' => '', 'code' => 0, 'count' => $data['total'], 'data' => $data['data']];
             }
             $this->xssFilter($result['data']);
@@ -129,6 +119,7 @@ class PageHelper extends Helper
 
     /**
      * 输出 XSS 过滤处理
+     *
      * @param array $items
      */
     private function xssFilter(array &$items)
@@ -142,8 +133,10 @@ class PageHelper extends Helper
 
     /**
      * 查询对象数量统计
+     *
      * @param BaseQuery|Query $query
      * @param boolean|integer $total
+     *
      * @return integer|boolean|string
      */
     private function getCount($query, $total = false)
@@ -157,7 +150,9 @@ class PageHelper extends Helper
 
     /**
      * 绑定排序并返回操作对象
+     *
      * @param Model|BaseQuery|string $dbQuery
+     *
      * @return Query
      * @throws \think\db\exception\DbException
      */
@@ -170,7 +165,7 @@ class PageHelper extends Helper
             }
             if (method_exists($query, 'getTableFields') && in_array('sort', $query->getTableFields())) {
                 if ($this->app->request->has($pk = $query->getPk() ?: 'id', 'post')) {
-                    $map = [$pk => $this->app->request->post($pk, 0)];
+                    $map  = [$pk => $this->app->request->post($pk, 0)];
                     $data = ['sort' => intval($this->app->request->post('sort', 0))];
                     if ($query->newQuery()->where($map)->update($data) !== false) {
                         $this->class->success(lang('think_library_sort_success'), '');

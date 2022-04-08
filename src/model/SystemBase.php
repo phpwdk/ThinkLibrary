@@ -15,14 +15,14 @@
 
 declare (strict_types=1);
 
-namespace think\admin\model;
+namespace think\simple\model;
 
-use think\admin\Model;
+use think\simple\Model;
 
 /**
  * 数据字典模型
  * Class SystemBase
- * @package think\admin\model
+ * @package think\simple\model
  */
 class SystemBase extends Model
 {
@@ -40,15 +40,17 @@ class SystemBase extends Model
 
     /**
      * 获取指定数据列表
-     * @param string $type 数据类型
-     * @param array $data 外围数据
+     *
+     * @param string $type  数据类型
+     * @param array  $data  外围数据
      * @param string $field 外链字段
-     * @param string $bind 绑定字段
+     * @param string $bind  绑定字段
+     *
      * @return array
      */
     public function items(string $type, array &$data = [], string $field = 'base_code', string $bind = 'base_info'): array
     {
-        $map = ['type' => $type, 'status' => 1, 'deleted' => 0];
+        $map   = ['type' => $type, 'status' => 1, 'deleted' => 0];
         $bases = $this->where($map)->order('sort desc,id asc')->column('code,name,content', 'code');
         if (count($data) > 0) foreach ($data as &$vo) $vo[$bind] = $bases[$vo[$field]] ?? [];
         return $bases;
@@ -56,7 +58,9 @@ class SystemBase extends Model
 
     /**
      * 获取所有数据类型
+     *
      * @param boolean $simple
+     *
      * @return array
      */
     public function types(bool $simple = false): array
@@ -68,7 +72,9 @@ class SystemBase extends Model
 
     /**
      * 格式化创建时间
+     *
      * @param string $value
+     *
      * @return string
      */
     public function getCreateAtAttr(string $value): string

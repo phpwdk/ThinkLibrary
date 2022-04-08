@@ -15,20 +15,22 @@
 
 declare (strict_types=1);
 
-namespace think\admin\model;
+namespace think\simple\model;
 
-use think\admin\Model;
+use think\simple\Model;
 
 /**
  * 系统日志模型
  * Class SystemOplog
- * @package think\admin\model
+ * @package think\simple\model
  */
 class SystemOplog extends Model
 {
     /**
      * 格式化创建时间
+     *
      * @param string $value
+     *
      * @return string
      */
     public function getCreateAtAttr(string $value): string

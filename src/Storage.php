@@ -1,30 +1,16 @@
 <?php
-
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 版权所有 2014~2022 广州楚才信息科技有限公司 [ http://www.cuci.cc ]
-// +----------------------------------------------------------------------
-// | 官方网站: https://gitee.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-// | 开源协议 ( https://mit-license.org )
-// +----------------------------------------------------------------------
-// | gitee 仓库地址 ：https://gitee.com/zoujingli/ThinkLibrary
-// | github 仓库地址 ：https://github.com/zoujingli/ThinkLibrary
-// +----------------------------------------------------------------------
-
 declare (strict_types=1);
 
-namespace think\admin;
+namespace think\simple;
 
-use think\admin\storage\LocalStorage;
+use think\simple\storage\LocalStorage;
 use think\App;
 use think\Container;
 
 /**
  * 文件存储引擎管理
  * Class Storage
- * @package think\admin
+ * @package think\simple
  * @method array info($name, $safe = false, $attname = null) static 文件存储信息
  * @method array set($name, $file, $safe = false, $attname = null) static 储存文件
  * @method string url($name, $safe = false, $attname = null) static 获取文件链接
@@ -62,14 +48,16 @@ abstract class Storage
 
     /**
      * Storage constructor.
+     *
      * @param App $app
+     *
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function __construct(App $app)
     {
-        $this->app = $app;
+        $this->app  = $app;
         $this->link = sysconf('storage.link_type');
         $this->initialize();
     }
@@ -81,10 +69,12 @@ abstract class Storage
 
     /**
      * 静态访问启用
-     * @param string $method 方法名称
-     * @param array $arguments 调用参数
+     *
+     * @param string $method    方法名称
+     * @param array  $arguments 调用参数
+     *
      * @return mixed
-     * @throws \think\admin\Exception
+     * @throws \think\simple\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -100,9 +90,11 @@ abstract class Storage
 
     /**
      * 设置文件驱动名称
+     *
      * @param null|string $name 驱动名称
+     *
      * @return static
-     * @throws \think\admin\Exception
+     * @throws \think\simple\Exception
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
@@ -119,10 +111,12 @@ abstract class Storage
 
     /**
      * 获取文件相对名称
+     *
      * @param string $url 文件访问链接
      * @param string $ext 文件后缀名称
      * @param string $pre 文件存储前缀
      * @param string $fun 名称规则方法
+     *
      * @return string
      */
     public static function name(string $url, string $ext = '', string $pre = '', string $fun = 'md5'): string
@@ -134,9 +128,11 @@ abstract class Storage
 
     /**
      * 下载文件到本地
-     * @param string $url 文件URL地址
-     * @param boolean $force 是否强制下载
+     *
+     * @param string  $url    文件URL地址
+     * @param boolean $force  是否强制下载
      * @param integer $expire 文件保留时间
+     *
      * @return array
      */
     public static function down(string $url, bool $force = false, int $expire = 0): array
@@ -157,8 +153,10 @@ abstract class Storage
 
     /**
      * 根据文件后缀获取文件MINE
+     *
      * @param array|string $exts 文件后缀
-     * @param array $mime 文件信息
+     * @param array        $mime 文件信息
+     *
      * @return string
      */
     public static function mime($exts, array $mime = []): string
@@ -183,7 +181,9 @@ abstract class Storage
 
     /**
      * 使用CURL读取网络资源
+     *
      * @param string $url 资源地址
+     *
      * @return string
      */
     public static function curlGet(string $url): string
@@ -202,8 +202,10 @@ abstract class Storage
 
     /**
      * 获取下载链接后缀
-     * @param null|string $attname 下载名称
+     *
+     * @param null|string $attname  下载名称
      * @param null|string $filename 文件名称
+     *
      * @return string
      */
     protected function getSuffix(?string $attname = null, ?string $filename = null): string
@@ -216,9 +218,9 @@ abstract class Storage
                 'TxcosStorage'  => '?imageMogr2/format/webp',
                 'AliossStorage' => '?x-oss-process=image/format,webp',
             ];
-            $class = basename(get_class($this));
-            $extens = strtolower(pathinfo($this->delSuffix($filename), PATHINFO_EXTENSION));
-            $suffix = in_array($extens, ['png', 'jpg', 'jpeg']) ? ($compress[$class] ?? '') : '';
+            $class    = basename(get_class($this));
+            $extens   = strtolower(pathinfo($this->delSuffix($filename), PATHINFO_EXTENSION));
+            $suffix   = in_array($extens, ['png', 'jpg', 'jpeg']) ? ($compress[$class] ?? '') : '';
         }
         if (is_string($attname) && strlen($attname) > 0 && stripos($this->link, 'full') !== false) {
             $suffix .= ($suffix ? '&' : '?') . 'attname=' . urlencode($attname);
@@ -228,7 +230,9 @@ abstract class Storage
 
     /**
      * 获取文件基础名称
+     *
      * @param string $name 文件名称
+     *
      * @return string
      */
     protected function delSuffix(string $name): string

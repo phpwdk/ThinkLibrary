@@ -15,7 +15,7 @@
 
 declare (strict_types=1);
 
-namespace think\admin\multiple;
+namespace think\simple\multiple;
 
 use Closure;
 use think\App;
@@ -26,7 +26,7 @@ use think\Response;
 /**
  * 多应用支持组件
  * Class Multiple
- * @package think\admin\multiple
+ * @package think\simple\multiple
  */
 class Multiple
 {
@@ -50,19 +50,22 @@ class Multiple
 
     /**
      * App constructor.
+     *
      * @param App $app
      */
     public function __construct(App $app)
     {
-        $this->app = $app;
+        $this->app  = $app;
         $this->name = $this->app->http->getName();
         $this->path = $this->app->http->getPath();
     }
 
     /**
      * 多应用解析
+     *
      * @param Request $request
      * @param Closure $next
+     *
      * @return Response
      */
     public function handle(Request $request, Closure $next): Response
@@ -90,7 +93,7 @@ class Multiple
             $this->app->http->setBind(false);
             $bind = $this->app->config->get('app.domain_bind', []);
             if (!empty($bind)) {
-                $domain = $this->app->request->host(true);
+                $domain    = $this->app->request->host(true);
                 $subDomain = $this->app->request->subDomain();
                 if (isset($bind[$domain])) {
                     $appName = $bind[$domain];
@@ -104,7 +107,7 @@ class Multiple
                 }
             }
             if (!$this->app->http->isBind()) {
-                $map = $this->app->config->get('app.app_map', []);
+                $map  = $this->app->config->get('app.app_map', []);
                 $deny = $this->app->config->get('app.deny_app_list', []);
                 $name = current(explode('/', $path));
                 if (strpos($name, '.')) {
@@ -143,11 +146,12 @@ class Multiple
 
     /**
      * 设置应用参数
+     *
      * @param string $appName 应用名称
      */
     private function setApp(string $appName): void
     {
-        $space = $this->app->config->get('app.app_namespace') ?: 'app';
+        $space   = $this->app->config->get('app.app_namespace') ?: 'app';
         $appPath = $this->path ?: $this->app->getBasePath() . $appName . DIRECTORY_SEPARATOR;
         // 动态设置多应用变量
         $this->app->setAppPath($appPath);
@@ -161,7 +165,9 @@ class Multiple
 
     /**
      * 加载应用文件
+     *
      * @param string $appPath 应用路径
+     *
      * @return void
      */
     private function loadApp(string $appPath): void

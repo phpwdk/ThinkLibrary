@@ -1,20 +1,11 @@
 <?php
 
-// +----------------------------------------------------------------------
-// | Library for ThinkAdmin
-// +----------------------------------------------------------------------
-// | 此文件版权所有归原作者所有，在此特别提出感谢 ！！！！！！！！！！！！！！！
-// +----------------------------------------------------------------------
-// | 以下源代码来自 https://github.com/erusev/parsedown ，基于 MIT 协议开源
-// | 为减少 Composer 组件数量优化加载速度，直接将源码复制于此，在此表示感谢原作者 ！
-// +----------------------------------------------------------------------
-
-namespace think\admin\extend;
+namespace think\simple\extend;
 
 /**
  * Markdown 文档解析服务
  * Class Parsedown
- * @package think\admin\extend
+ * @package think\simple\extend
  */
 class Parsedown
 {
@@ -140,12 +131,12 @@ class Parsedown
             }
             if (strpos($line, "\t") !== false) {
                 $parts = explode("\t", $line);
-                $line = $parts[0];
+                $line  = $parts[0];
                 unset($parts[0]);
                 foreach ($parts as $part) {
                     $shortage = 4 - mb_strlen($line, 'utf-8') % 4;
-                    $line .= str_repeat(' ', $shortage);
-                    $line .= $part;
+                    $line     .= str_repeat(' ', $shortage);
+                    $line     .= $part;
                 }
             }
             $indent = 0;
@@ -165,7 +156,7 @@ class Parsedown
                     }
                 }
             }
-            $marker = $text[0];
+            $marker     = $text[0];
             $blockTypes = $this->unmarkedBlockTypes;
             if (isset($this->BlockTypes[$marker])) {
                 foreach ($this->BlockTypes[$marker] as $blockType) {
@@ -177,7 +168,7 @@ class Parsedown
                 if (isset($Block)) {
                     $Block['type'] = $blockType;
                     if (!isset($Block['identified'])) {
-                        $Blocks [] = $CurrentBlock;
+                        $Blocks []           = $CurrentBlock;
                         $Block['identified'] = true;
                     }
                     if ($this->isBlockContinuable($blockType)) {
@@ -193,8 +184,8 @@ class Parsedown
             if (isset($CurrentBlock) and !isset($CurrentBlock['type']) and !isset($CurrentBlock['interrupted'])) {
                 $CurrentBlock['element']['text'] .= "\n" . $text;
             } else {
-                $Blocks [] = $CurrentBlock;
-                $CurrentBlock = $this->paragraph($Line);
+                $Blocks []                  = $CurrentBlock;
+                $CurrentBlock               = $this->paragraph($Line);
                 $CurrentBlock['identified'] = true;
             }
         }
@@ -1147,7 +1138,7 @@ class Parsedown
 
             $Definition = $this->DefinitionData['Reference'][$definition];
 
-            $Element['attributes']['href'] = $Definition['url'];
+            $Element['attributes']['href']  = $Definition['url'];
             $Element['attributes']['title'] = $Definition['title'];
         }
 
@@ -1309,9 +1300,9 @@ class Parsedown
         // very strongly consider an alternative if you're writing an
         // extension
         elseif (isset($Element['rawHtml'])) {
-            $text = $Element['rawHtml'];
+            $text                   = $Element['rawHtml'];
             $allowRawHtmlInSafeMode = isset($Element['allowRawHtmlInSafeMode']) && $Element['allowRawHtmlInSafeMode'];
-            $permitRawHtml = !$this->safeMode || $allowRawHtmlInSafeMode;
+            $permitRawHtml          = !$this->safeMode || $allowRawHtmlInSafeMode;
         }
 
         if (isset($text)) {

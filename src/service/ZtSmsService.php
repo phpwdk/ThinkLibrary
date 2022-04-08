@@ -15,15 +15,15 @@
 
 declare (strict_types=1);
 
-namespace think\admin\service;
+namespace think\simple\service;
 
-use think\admin\extend\HttpExtend;
-use think\admin\Service;
+use think\simple\extend\HttpExtend;
+use think\simple\Service;
 
 /**
  * 新助通短信接口服务
  * Class ZtSmsService
- * @package think\admin\service
+ * @package think\simple\service
  */
 class ZtSmsService extends Service
 {
@@ -59,8 +59,10 @@ class ZtSmsService extends Service
 
     /**
      * 短信服务初始化
+     *
      * @param string $username 账号名称
      * @param string $password 账号密码
+     *
      * @return static
      */
     public function setAuth(string $username, string $password): ZtSmsService
@@ -72,9 +74,11 @@ class ZtSmsService extends Service
 
     /**
      * 验证手机短信验证码
-     * @param string $code 验证码
-     * @param string $phone 手机号验证
+     *
+     * @param string $code     验证码
+     * @param string $phone    手机号验证
      * @param string $template 模板编码
+     *
      * @return boolean
      */
     public function checkVerifyCode(string $code, string $phone, string $template = 'ztsms.register_verify'): bool
@@ -90,9 +94,11 @@ class ZtSmsService extends Service
 
     /**
      * 验证手机短信验证码
-     * @param string $phone 手机号码
-     * @param integer $wait 等待时间
-     * @param string $template 模板编码
+     *
+     * @param string  $phone    手机号码
+     * @param integer $wait     等待时间
+     * @param string  $template 模板编码
+     *
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -123,8 +129,10 @@ class ZtSmsService extends Service
 
     /**
      * 创建短信签名
-     * @param array $signs 签名列表
+     *
+     * @param array  $signs  签名列表
      * @param string $remark 签名备注
+     *
      * @return array
      */
     public function signAdd(array $signs = [], string $remark = ''): array
@@ -135,7 +143,9 @@ class ZtSmsService extends Service
 
     /**
      * 查询短信签名
+     *
      * @param string $name 短信签名
+     *
      * @return array
      */
     public function signGet(string $name): array
@@ -147,11 +157,13 @@ class ZtSmsService extends Service
 
     /**
      * 报备短信模板
-     * @param string $name 模板名称
-     * @param integer $type 模板类型（1验证码, 2行业通知, 3营销推广）
-     * @param string $content 模板内容
-     * @param array $params 模板变量
-     * @param string $remark 模板备注
+     *
+     * @param string  $name    模板名称
+     * @param integer $type    模板类型（1验证码, 2行业通知, 3营销推广）
+     * @param string  $content 模板内容
+     * @param array   $params  模板变量
+     * @param string  $remark  模板备注
+     *
      * @return array
      */
     public function tplAdd(string $name, int $type, string $content, array $params = [], string $remark = ''): array
@@ -163,7 +175,9 @@ class ZtSmsService extends Service
 
     /**
      * 查询模板状态
+     *
      * @param string $temId 短信模板
+     *
      * @return array
      */
     public function tplGet(string $temId): array
@@ -173,9 +187,11 @@ class ZtSmsService extends Service
 
     /**
      * 发送模板短信
-     * @param string $tpId 短信模板
-     * @param string $sign 短信签名
-     * @param array $records 发送记录
+     *
+     * @param string $tpId    短信模板
+     * @param string $sign    短信签名
+     * @param array  $records 发送记录
+     *
      * @return array
      */
     public function tplSend(string $tpId, string $sign, array $records): array
@@ -187,9 +203,11 @@ class ZtSmsService extends Service
 
     /**
      * 发送定时短信
-     * @param string $mobile 发送手机号码
-     * @param string $content 发送短信内容
-     * @param integer $time 定时发送时间（为 0 立即发送）
+     *
+     * @param string  $mobile  发送手机号码
+     * @param string  $content 发送短信内容
+     * @param integer $time    定时发送时间（为 0 立即发送）
+     *
      * @return array
      */
     public function timeSend(string $mobile, string $content, int $time = 0): array
@@ -201,7 +219,9 @@ class ZtSmsService extends Service
 
     /**
      * 批量发送短信
+     *
      * @param array $records
+     *
      * @return array
      */
     public function batchSend(array $records): array
@@ -220,7 +240,9 @@ class ZtSmsService extends Service
 
     /**
      * 短信签名内容处理
+     *
      * @param string $name
+     *
      * @return string
      */
     private function _singName(string $name): string
@@ -232,16 +254,18 @@ class ZtSmsService extends Service
 
     /**
      * 执行网络请求
-     * @param string $uri 接口请求地址
-     * @param array $data 接口请求参数
+     *
+     * @param string $uri  接口请求地址
+     * @param array  $data 接口请求参数
+     *
      * @return array
      */
     private function doRequest(string $uri, array $data): array
     {
-        $encode = md5(md5($this->password) . ($tkey = time()));
+        $encode  = md5(md5($this->password) . ($tkey = time()));
         $options = ['headers' => ['Content-Type:application/json;charset="UTF-8"']];
         $extends = ['username' => $this->username, 'password' => $encode, 'tKey' => $tkey];
-        $result = json_decode(HttpExtend::post($this->api . $uri, json_encode(array_merge($data, $extends)), $options), true);
+        $result  = json_decode(HttpExtend::post($this->api . $uri, json_encode(array_merge($data, $extends)), $options), true);
         if (empty($result['code'])) {
             return [0, [], '接口请求网络异常'];
         } elseif (intval($result['code']) === 200) {
@@ -253,7 +277,9 @@ class ZtSmsService extends Service
 
     /**
      * 获取状态描述
+     *
      * @param integer $code 异常编号
+     *
      * @return string
      */
     private function error(int $code): string
