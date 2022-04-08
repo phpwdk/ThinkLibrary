@@ -14,8 +14,8 @@
     "email": "383174124@qq.com",
     "wiki": "",
     "forum": "",
-    "source": "https://gitee.com/phpwdk/ThinkLibrary",
-    "issues": "https://gitee.com/phpwdk/ThinkLibrary/issues"
+    "source": "https://gitee.com/phpwdk/think-library",
+    "issues": "https://gitee.com/phpwdk/think-library/issues"
   },
   "require": {
     "ext-gd": "*",

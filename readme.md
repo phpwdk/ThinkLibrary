@@ -1,5 +1,5 @@
-> Gitee 仓库地址：https://gitee.com/phpwdk/ThinkLibrary
-> 
+> Gitee 仓库地址：https://gitee.com/phpwdk/think-library
+>
 > 该项目引用于 ThinkLibrary 6.0.29
 
 ThinkLibrary 6.0 for ThinkPHP 6.0
